@@ -1,9 +1,14 @@
+@import url(https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&amp;display=swap);
+@import url(https://fonts.googleapis.com/css?family=Alata);
+@import url(https://fonts.googleapis.com/css?family=Open+Sans);
+
 html {
   height: 100%;
 }
 
 body {
   background-color: #22212c;
+  font-family: 'Open Sans', sans-serif;
 }
 
 .navbar.navbar-light {
