@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
+
 import Home from '../views/Home.vue'
 
 const routes: Array<RouteRecordRaw> = [
@@ -6,12 +7,22 @@ const routes: Array<RouteRecordRaw> = [
     path: '/',
     name: 'Home',
     component: Home
+  },
+  {
+    path: '/matches',
+    name: 'Matches',
+    component: () => import('../views/Matches.vue')
+  },
+  {
+    path: '/create',
+    name: 'Create',
+    component: () => import('../views/Create.vue')
+  },
+  {
+    path: '/scoreboard',
+    name: 'Scoreboard',
+    component: () => import('../views/Scoreboard.vue')
   }
-  //{
-  //  path: '/about',
-  //  name: 'About',
-  //  component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
-  //}
 ]
 
 const router = createRouter({

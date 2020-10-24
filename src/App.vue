@@ -1,15 +1,34 @@
 <template>
   <div>
     <nav class="navbar navbar-light navbar-expand-md">
-        <div class="container-fluid"><a class="navbar-brand text-light" href="#" style="font-family: Alata, sans-serif;">SQLMatches</a><button data-toggle="collapse" class="navbar-toggler" data-target="#navcol-1"><span class="sr-only">Toggle navigation</span><span class="navbar-toggler-icon"></span></button>
+        <div class="container-fluid">
+            <router-link class="navbar-brand text-light" style="font-family: Alata, sans-serif;" role="button" :to="{ name: 'Home'}">
+                SQLMatches
+            </router-link>
+            <button data-toggle="collapse" class="navbar-toggler" data-target="#navcol-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="navbar-toggler-icon"></span>
+            </button>
             <div class="collapse navbar-collapse" id="navcol-1">
                 <ul class="nav navbar-nav mr-auto">
-                    <li class="nav-item"><a class="nav-link text-light" href="#">&nbsp;Home&nbsp;</a></li>
-                    <li class="nav-item"><a class="nav-link text-light" href="#">&nbsp;Matches&nbsp;</a></li>
+                    <li class="nav-item">
+                        <router-link class="nav-link text-light" role="button" :to="{ name: 'Home'}">&nbsp;Home</router-link>
+                    </li>
+                    <li class="nav-item">
+                        <router-link class="nav-link text-light" role="button" :to="{ name: 'Matches'}">&nbsp;Matches</router-link>
+                    </li>
                 </ul>
                 <ul class="nav navbar-nav ml-auto">
-                    <li class="nav-item spawn"><a class="btn btn-info btn-lg" role="button">Create Community&nbsp;<i class="la la-plus"></i></a></li>
-                    <li class="nav-item"><a class="btn btn-primary btn-lg" role="button">&nbsp;Login&nbsp;<i class="la la-chevron-right"></i></a></li>
+                    <li class="nav-item spawn">
+                        <router-link class="btn btn-info btn-lg" role="button" :to="{ name: 'Create'}">
+                            Create Community&nbsp;<i class="la la-plus"></i>
+                        </router-link>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/api/login" class="btn btn-primary btn-lg" role="button">
+                            &nbsp;Login&nbsp;<i class="la la-chevron-right"></i>
+                        </a>
+                    </li>
                 </ul>
           </div>
         </div>
@@ -26,10 +45,14 @@
                     <div class="col-sm-6 col-md-3 item">
                         <h3>Index</h3>
                         <ul>
-                            <li><a href="#">Home</a></li>
-                            <li><a href="#">Create Community</a></li>
-                            <li><a href="#">Matches</a></li>
-                            <li><a href="#">Donate</a></li>
+                            <li>
+                                <router-link :to="{ name: 'Home'}">Home</router-link>
+                            </li>
+                            <li>
+                                <router-link :to="{ name: 'Matches'}">Matches</router-link>
+                            </li>
+                            <li><router-link :to="{ name: 'Create'}">Create Community</router-link></li>
+                            <li><a href="/api/login">Login</a></li>
                         </ul>
                     </div>
                     <!-- End: Services -->
@@ -40,6 +63,7 @@
                             <li><a href="#">Discord</a></li>
                             <li><a href="#">Twitter</a></li>
                             <li><a href="#">GitHub</a></li>
+                            <li><a href="#">Donate</a></li>
                         </ul>
                     </div>
                     <!-- End: About -->

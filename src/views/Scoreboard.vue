@@ -1,35 +1,5 @@
-<!DOCTYPE html>
-<html>
-
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-    <title>sqlmatchesremake</title>
-    <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&amp;display=swap">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Alata">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans">
-    <link rel="stylesheet" href="assets/fonts/line-awesome.min.css">
-    <link rel="stylesheet" href="assets/css/styles.css">
-</head>
-
-<body style="font-family: 'Open Sans', sans-serif;">
-    <nav class="navbar navbar-light navbar-expand-md">
-        <div class="container-fluid"><a class="navbar-brand text-light" href="#" style="font-family: Alata, sans-serif;">SQLMatches</a><button data-toggle="collapse" class="navbar-toggler" data-target="#navcol-1"><span class="sr-only">Toggle navigation</span><span class="navbar-toggler-icon"></span></button>
-            <div
-                class="collapse navbar-collapse" id="navcol-1">
-                <ul class="nav navbar-nav mr-auto">
-                    <li class="nav-item"><a class="nav-link text-light" href="#">&nbsp;Home&nbsp;</a></li>
-                    <li class="nav-item"><a class="nav-link text-light" href="#">&nbsp;Matches&nbsp;</a></li>
-                </ul>
-                <ul class="nav navbar-nav ml-auto">
-                    <li class="nav-item spawn"><a class="btn btn-info btn-lg" role="button">Create Community&nbsp;<i class="la la-plus"></i></a></li>
-                    <li class="nav-item"><a class="btn btn-primary btn-lg" role="button">&nbsp;Login&nbsp;<i class="la la-chevron-right"></i></a></li>
-                </ul>
-        </div>
-        </div>
-    </nav>
-    <div class="container">
+<template>
+    <div>
         <div class="row">
             <div class="col-md-12">
                 <div class="card bg-dark content-div">
@@ -207,9 +177,12 @@
             </div>
         </div>
     </div>
-    <script src="assets/js/jquery.min.js"></script>
-    <script src="assets/bootstrap/js/bootstrap.min.js"></script>
-    <script src="assets/js/bs-init.js"></script>
-</body>
+</template>
 
-</html>
+<script lang="ts">
+import { defineComponent } from 'vue'
+
+export default defineComponent({
+  name: 'Scoreboard'
+})
+</script>
