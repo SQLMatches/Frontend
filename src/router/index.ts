@@ -19,9 +19,14 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import('../views/Create.vue')
   },
   {
-    path: '/scoreboard',
+    path: '/scoreboard/:match_id',
     name: 'Scoreboard',
     component: () => import('../views/Scoreboard.vue')
+  },
+  {
+    path: '/create',
+    name: 'Create',
+    component: () => import('../views/Create.vue')
   }
 ]
 
