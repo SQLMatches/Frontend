@@ -19,7 +19,7 @@
                     <h3 class="text-light card-title">Recent Matches</h3>
                     <ul class="list-unstyled matches">
                         <li>
-                            <div class="card match" data-toggle="tooltip" data-bs-tooltip="" title="Date - Map"><img class="card-img w-100 d-block" src="@/assets/img/cache.jpg">
+                            <div class="card match" v-b-tooltip.hover title="Date - Map"><img class="card-img w-100 d-block" src="@/assets/img/cache.jpg">
                                 <div class="card-img-overlay d-flex d-xl-flex flex-column flex-grow-0 flex-shrink-0 justify-content-center align-items-center justify-content-xl-center align-items-xl-center">
                                     <div class="row no-gutters row-cols-3 match">
                                         <div class="col-md-4" style="text-align: right;">
@@ -83,7 +83,26 @@
 </template>
 
 <script>
+import axios from 'axios'
+
 export default {
-  name: 'Home'
+  name: 'Home',
+  data () {
+    return {
+      communities: []
+    }
+  },
+  created () {
+    this.getCommunities()
+  },
+  methods: {
+    getCommunities (search = null) {
+      axios.post('communities/').then(res => {
+        this.communities = res.data.data
+      }).catch(error => {
+        console.log(error)
+      })
+    }
+  }
 }
 </script>

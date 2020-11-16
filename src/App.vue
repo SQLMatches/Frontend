@@ -1,20 +1,22 @@
 <template>
   <div id="app">
-    <nav class="navbar navbar-light navbar-expand-md">
-        <div class="container-fluid"><a class="navbar-brand text-light" href="#" style="font-family: Alata, sans-serif;">SQLMatches</a><button data-toggle="collapse" class="navbar-toggler" data-target="#navcol-1"><span class="sr-only">Toggle navigation</span><span class="navbar-toggler-icon"></span></button>
-            <div
-                class="collapse navbar-collapse" id="navcol-1">
-                <ul class="nav navbar-nav mr-auto">
-                    <li class="nav-item"><a class="nav-link text-light" href="#">&nbsp;Home&nbsp;</a></li>
-                    <li class="nav-item"><a class="nav-link text-light" href="#">&nbsp;Matches&nbsp;</a></li>
-                </ul>
-                <ul class="nav navbar-nav ml-auto">
-                    <li class="nav-item spawn"><a class="btn btn-info btn-lg" role="button">Create Community&nbsp;<i class="la la-plus"></i></a></li>
-                    <li class="nav-item"><a class="btn btn-primary btn-lg" role="button">&nbsp;Login&nbsp;<i class="la la-chevron-right"></i></a></li>
-                </ul>
-        </div>
-        </div>
-    </nav>
+    <b-navbar toggleable="lg" type="dark" style="background-color: #2b2640;">
+      <b-navbar-brand href="#" class="text-light" style="font-family: Alata, sans-serif;">SQLMatches</b-navbar-brand>
+
+      <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
+
+      <b-collapse id="nav-collapse" is-nav>
+        <b-navbar-nav>
+          <b-nav-item href="#">&nbsp;Home&nbsp;</b-nav-item>
+          <b-nav-item href="#">&nbsp;Matches&nbsp;</b-nav-item>
+        </b-navbar-nav>
+
+        <b-navbar-nav class="ml-auto">
+          <b-nav-item href="#"><a class="btn btn-info btn-lg" role="button">Create Community&nbsp;<i class="la la-plus"></i></a></b-nav-item>
+          <b-nav-item href="#"><a class="btn btn-primary btn-lg" role="button">&nbsp;Login&nbsp;<i class="la la-chevron-right"></i></a></b-nav-item>
+        </b-navbar-nav>
+      </b-collapse>
+    </b-navbar>
     <div class="container">
       <router-view/>
     </div>
@@ -52,7 +54,7 @@
                     <!-- End: Footer Text -->
                 </div>
                 <!-- Start: Copyright -->
-                <p class="copyright">SQLMatches is proudly licensed under GPL-3.0</p>
+                <p class="copyright">SQLMatches is proudly licensed under GPL-3.0 | 2020 - {{ new Date().getFullYear() }}</p>
                 <!-- End: Copyright -->
             </div>
         </footer>

@@ -6,8 +6,8 @@ body {
   background-color: #22212c;
 }
 
-.navbar.navbar-light {
-  background-color: #2b2640;
+nav .navbar-nav li a{
+  color: #fff !important
 }
 
 .btn-primary {
