@@ -83,26 +83,7 @@
 </template>
 
 <script>
-import axios from 'axios'
-
 export default {
-  name: 'Home',
-  data () {
-    return {
-      communities: []
-    }
-  },
-  created () {
-    this.getCommunities()
-  },
-  methods: {
-    getCommunities (search = null) {
-      axios.post('communities/').then(res => {
-        this.communities = res.data.data
-      }).catch(error => {
-        console.log(error)
-      })
-    }
-  }
+  name: 'Home'
 }
 </script>

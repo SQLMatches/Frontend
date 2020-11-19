@@ -1,19 +1,19 @@
 <template>
   <div id="app">
     <b-navbar toggleable="lg" type="dark" style="background-color: #2b2640;">
-      <b-navbar-brand href="#" class="text-light" style="font-family: Alata, sans-serif;">SQLMatches</b-navbar-brand>
+      <b-navbar-brand :to="{name: 'Home'}" class="text-light" style="font-family: Alata, sans-serif;">SQLMatches</b-navbar-brand>
 
       <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
 
       <b-collapse id="nav-collapse" is-nav>
         <b-navbar-nav>
-          <b-nav-item href="#">&nbsp;Home&nbsp;</b-nav-item>
-          <b-nav-item href="#">&nbsp;Matches&nbsp;</b-nav-item>
+          <b-nav-item :to="{name: 'Home'}">&nbsp;Home&nbsp;</b-nav-item>
+          <b-nav-item :to="{name: 'Matches'}">&nbsp;Matches&nbsp;</b-nav-item>
         </b-navbar-nav>
 
         <b-navbar-nav class="ml-auto">
-          <b-nav-item href="#"><a class="btn btn-info btn-lg" role="button">Create Community&nbsp;<i class="la la-plus"></i></a></b-nav-item>
-          <b-nav-item href="#"><a class="btn btn-primary btn-lg" role="button">&nbsp;Login&nbsp;<i class="la la-chevron-right"></i></a></b-nav-item>
+          <b-nav-item href="#"><div class="btn btn-info btn-lg" role="button">Create Community&nbsp;<i class="la la-plus"></i></div></b-nav-item>
+          <b-nav-item :to="{name: 'Login'}"><div class="btn btn-primary btn-lg" role="button">&nbsp;Login&nbsp;<i class="la la-chevron-right"></i></div></b-nav-item>
         </b-navbar-nav>
       </b-collapse>
     </b-navbar>
@@ -54,7 +54,7 @@
                     <!-- End: Footer Text -->
                 </div>
                 <!-- Start: Copyright -->
-                <p class="copyright">SQLMatches is proudly licensed under GPL-3.0 | 2020 - {{ new Date().getFullYear() }}</p>
+                <p class="copyright">SQLMatches is proudly licensed under GPL-3.0 <br> 2020 - {{ new Date().getFullYear() }}</p>
                 <!-- End: Copyright -->
             </div>
         </footer>
