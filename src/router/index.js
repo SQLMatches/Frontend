@@ -29,6 +29,13 @@ export default new Router({
       }
     },
     {
+      path: '/logout',
+      name: 'Logout',
+      beforeEnter: (to, from, next) => {
+        window.location.href = Axios.defaults.baseURL + '/steam/logout'
+      }
+    },
+    {
       path: '*',
       name: 'PageNotFound',
       component: PageNotFound

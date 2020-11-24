@@ -39,8 +39,6 @@ export default {
     getCommunities (search = null, page = 1, desc = true) {
       axios.post('/communities/').then(res => {
         this.communities = res.data.data
-      }).catch(_ => {
-        this.$router.push({name: 'Login'})
       })
     }
   },

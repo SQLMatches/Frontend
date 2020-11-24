@@ -13,20 +13,41 @@
 
         <b-navbar-nav class="ml-auto">
           <b-nav-item href="#"><div class="btn btn-info btn-lg" role="button">Create Community&nbsp; <b-icon icon="plus-circle-fill" variant="light"></b-icon></div></b-nav-item>
-          <b-nav-item :to="{name: 'Login'}"><div class="btn btn-primary btn-lg" role="button">&nbsp;Login&nbsp; <b-icon icon="chevron-double-right" variant="light"></b-icon></div></b-nav-item>
+          <b-nav-item v-if="!loggedIn" :to="{name: 'Login'}"><div class="btn btn-primary btn-lg" role="button">&nbsp;Login&nbsp; <b-icon icon="chevron-double-right" variant="light"></b-icon></div></b-nav-item>
+          <b-nav-item v-else :to="{name: 'Logout'}"><div class="btn btn-primary btn-lg" role="button">&nbsp;Logout&nbsp; <b-icon icon="chevron-double-left" variant="light"></b-icon></div></b-nav-item>
         </b-navbar-nav>
       </b-collapse>
     </b-navbar>
 
     <div class="container">
-      <router-view/>
+      <div v-if="loggedIn">
+        <router-view/>
+      </div>
+      <div v-else class="text-center text-light" style="margin-top:150px">
+        <h3>This site requires you to login with steam before continuing.</h3>
+        <router-link :to="{name: 'Login'}"><div class="btn btn-primary btn-lg" role="button">&nbsp;Login with steam&nbsp; <b-icon icon="chevron-double-right" variant="light"></b-icon></div></router-link>
+      </div>
     </div>
 
   </div>
 </template>
 
 <script>
+import axios from 'axios'
+
 export default {
-  name: 'App'
+  name: 'App',
+  data () {
+    return {
+      loggedIn: false
+    }
+  },
+  beforeMount () {
+    axios.get('/steam/test').then(_ => {
+      this.loggedIn = true
+    }).catch(_ => {
+      this.loggedIn = false
+    })
+  }
 }
 </script>
