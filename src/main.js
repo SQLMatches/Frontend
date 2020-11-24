@@ -1,6 +1,7 @@
 import Vue from 'vue'
-import { BootstrapVue, BootstrapVueIcons } from 'bootstrap-vue'
 import Axios from 'axios'
+
+import { BootstrapVue, BootstrapVueIcons } from 'bootstrap-vue'
 
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 import './assets/css/bootstrap.min.css'
@@ -13,7 +14,7 @@ Vue.use(BootstrapVue)
 Vue.use(BootstrapVueIcons)
 
 Vue.prototype.$http = Axios
-Axios.defaults.baseURL = 'http://127.0.0.1:8000'
+Axios.defaults.baseURL = 'http://localhost/api'
 Vue.config.productionTip = false
 
 /* eslint-disable no-new */

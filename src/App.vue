@@ -20,46 +20,6 @@
     <div class="container">
       <router-view/>
     </div>
-    <!-- Start: Footer Dark -->
-    <div class="footer-dark bg-dark content-div">
-        <footer>
-            <div class="container">
-                <div class="row">
-                    <!-- Start: Services -->
-                    <div class="col-sm-6 col-md-3 item">
-                        <h3>Index</h3>
-                        <ul>
-                            <li><a href="#">Home</a></li>
-                            <li><a href="#">Create Community</a></li>
-                            <li><a href="#">Matches</a></li>
-                            <li><a href="#">Donate</a></li>
-                        </ul>
-                    </div>
-                    <!-- End: Services -->
-                    <!-- Start: About -->
-                    <div class="col-sm-6 col-md-3 item">
-                        <h3>Externals</h3>
-                        <ul>
-                            <li><a href="#">Discord</a></li>
-                            <li><a href="#">Twitter</a></li>
-                            <li><a href="#">GitHub</a></li>
-                        </ul>
-                    </div>
-                    <!-- End: About -->
-                    <!-- Start: Footer Text -->
-                    <div class="col-md-6 item text">
-                        <h3>About</h3>
-                        <p>SQLMatches is a free &amp; open source software built around giving players &amp; communities easy access to match records &amp; demos.</p>
-                    </div>
-                    <!-- End: Footer Text -->
-                </div>
-                <!-- Start: Copyright -->
-                <p class="copyright">SQLMatches is proudly licensed under GPL-3.0 <br> 2020 - {{ new Date().getFullYear() }}</p>
-                <!-- End: Copyright -->
-            </div>
-        </footer>
-    </div>
-    <!-- End: Footer Dark -->
   </div>
 </template>
 

@@ -44,33 +44,13 @@
         <div class="col-md-12">
             <div class="card bg-dark content-div">
                 <div class="card-body">
-                    <h3 class="text-light card-title">Popular Communities</h3>
+                    <h3 class="text-light card-title">Communities</h3>
                     <div class="row">
-                        <div class="col-md-3">
+                        <div class="col-md-3" v-for="(community, index) in communities" :key="index">
                             <div class="card light team">
-                                <div class="card-body text-center"><img class="img-thumbnail team-pfp" src="@/assets/img/ahahha.png">
-                                    <h4 class="text-light card-title">Community Name</h4>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="card light team">
-                                <div class="card-body text-center"><img class="img-thumbnail team-pfp" src="@/assets/img/ahahha.png">
-                                    <h4 class="text-light card-title">Community Name<br></h4>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="card light team">
-                                <div class="card-body text-center"><img class="img-thumbnail team-pfp" src="@/assets/img/ahahha.png">
-                                    <h4 class="text-light card-title">Community Name<br></h4>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="card light team">
-                                <div class="card-body text-center"><img class="img-thumbnail team-pfp" src="@/assets/img/ahahha.png">
-                                    <h4 class="text-light card-title">Community Name<br></h4>
+                                <div class="card-body text-center">
+                                  <img class="img-thumbnail team-pfp" src="@/assets/img/ahahha.png">
+                                    <h4 class="text-light card-title">{{ community.community_name }}</h4>
                                 </div>
                             </div>
                         </div>
@@ -83,7 +63,26 @@
 </template>
 
 <script>
+import axios from 'axios'
+
 export default {
-  name: 'Home'
+  name: 'Home',
+  data () {
+    return {
+      communities: []
+    }
+  },
+  methods: {
+    getCommunities (search = null, page = 1, desc = true) {
+      axios.post('/communities/').then(res => {
+        this.communities = res.data.data
+      }).catch(_ => {
+        this.$router.push({name: 'Login'})
+      })
+    }
+  },
+  created () {
+    this.getCommunities()
+  }
 }
 </script>

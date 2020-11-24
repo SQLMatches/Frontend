@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+import Axios from 'axios'
 
 import Home from '@/pages/Home'
 import Matches from '@/pages/Matches'
@@ -18,6 +19,13 @@ export default new Router({
       path: '/',
       name: 'Matches',
       component: Matches
+    },
+    {
+      path: '/login',
+      name: 'Login',
+      beforeEnter: (to, from, next) => {
+        window.location.href = Axios.defaults.baseURL + '/steam/login'
+      }
     }
   ]
 })
