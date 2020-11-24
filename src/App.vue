@@ -42,7 +42,7 @@ export default {
       loggedIn: false
     }
   },
-  beforeMount () {
+  created () {
     axios.get('/steam/test').then(_ => {
       this.loggedIn = true
     }).catch(_ => {
