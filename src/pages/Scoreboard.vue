@@ -42,7 +42,7 @@ export default {
   },
   methods: {
     getScoreboard (matchID, communityName) {
-      axios.get(`/match/${matchID}?community_name=${communityName}`).then(res => {
+      axios.get(`/match/${matchID}/?community_name=${communityName}`).then(res => {
         this.scoreboard = res.data.data
       }).catch(_ => {
         this.$router.push({name: 'PageNotFound'})
