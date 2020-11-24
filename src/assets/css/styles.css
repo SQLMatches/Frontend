@@ -133,7 +133,7 @@ h1, h2 {
 .search-container {
   display: flex;
   font-size: 14px;
-  margin: 25px 0px;
+  margin-bottom: 25px;
 }
 
 .search-input {

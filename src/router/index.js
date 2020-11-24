@@ -4,6 +4,7 @@ import Axios from 'axios'
 
 import Home from '@/pages/Home'
 import Matches from '@/pages/Matches'
+import PageNotFound from '@/pages/PageNotFound'
 
 Vue.use(Router)
 
@@ -16,7 +17,7 @@ export default new Router({
       component: Home
     },
     {
-      path: '/',
+      path: '/matches',
       name: 'Matches',
       component: Matches
     },
@@ -24,8 +25,13 @@ export default new Router({
       path: '/login',
       name: 'Login',
       beforeEnter: (to, from, next) => {
-        window.location.href = Axios.defaults.baseURL + '/steam/login'
+        window.location.href = Axios.defaults.baseURL + '/steam/login?return=' + from.path
       }
+    },
+    {
+      path: '*',
+      name: 'PageNotFound',
+      component: PageNotFound
     }
   ]
 })

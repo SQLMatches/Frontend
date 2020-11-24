@@ -8,6 +8,7 @@
                     <p class="text-light card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris pharetra a neque in elementum. Ut aliquet convallis consectetur. Integer urna justo, malesuada vel viverra in, ornare eget felis. Etiam nec metus tempus tellus semper
                         egestas at non purus. Pellentesque gravida lacus finibus nibh ultrices, vitae lacinia ante posuere. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Suspendisse convallis odio eu euismod
                         consequat.<br></p>
+                    <button-counter></button-counter>
                 </div>
             </div>
         </div>
@@ -40,49 +41,17 @@
             </div>
         </div>
     </div>
-    <div class="row">
-        <div class="col-md-12">
-            <div class="card bg-dark content-div">
-                <div class="card-body">
-                    <h3 class="text-light card-title">Communities</h3>
-                    <div class="row">
-                        <div class="col-md-3" v-for="(community, index) in communities" :key="index">
-                            <div class="card light team">
-                                <div class="card-body text-center">
-                                  <img class="img-thumbnail team-pfp" src="@/assets/img/ahahha.png">
-                                    <h4 class="text-light card-title">{{ community.community_name }}</h4>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+    <communities></communities>
   </div>
 </template>
 
 <script>
-import axios from 'axios'
+import Communities from '../compoments/Communities.vue'
 
 export default {
   name: 'Home',
-  data () {
-    return {
-      communities: []
-    }
-  },
-  methods: {
-    getCommunities (search = null, page = 1, desc = true) {
-      axios.post('/communities/').then(res => {
-        this.communities = res.data.data
-      }).catch(_ => {
-        this.$router.push({name: 'Login'})
-      })
-    }
-  },
-  created () {
-    this.getCommunities()
+  components: {
+    Communities
   }
 }
 </script>
