@@ -15,7 +15,7 @@
           </tr>
       </thead>
       <tbody>
-          <tr v-for="(player, index) in team" :key="index">
+          <tr v-for="(player, index) in team" :key="index" v-on:click="loadSteamPage(player.steam_id)" style="cursor: pointer;">
               <td>{{ player.name }}</td>
               <td>{{ player.kills }}</td>
               <td>{{ player.deaths }}</td>
@@ -35,6 +35,11 @@
 export default {
   props: [
     'team'
-  ]
+  ],
+  methods: {
+    loadSteamPage (steamID) {
+      window.open(`https://steamcommunity.com/profiles/${steamID}`, '_blank')
+    }
+  }
 }
 </script>
