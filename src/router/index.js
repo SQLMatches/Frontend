@@ -4,6 +4,7 @@ import Axios from 'axios'
 
 import Home from '@/pages/Home'
 import Matches from '@/pages/Matches'
+import Scoreboard from '@/pages/Scoreboard'
 import PageNotFound from '@/pages/PageNotFound'
 
 Vue.use(Router)
@@ -20,6 +21,11 @@ export default new Router({
       path: '/matches',
       name: 'Matches',
       component: Matches
+    },
+    {
+      path: '/c/:communityName/s/:matchID',
+      name: 'Scoreboard',
+      component: Scoreboard
     },
     {
       path: '/login',
