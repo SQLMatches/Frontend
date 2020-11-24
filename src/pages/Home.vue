@@ -5,10 +5,10 @@
             <div class="card bg-dark content-div">
                 <div class="card-body">
                     <h3 class="text-light card-title">How it works</h3>
-                    <p class="text-light card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris pharetra a neque in elementum. Ut aliquet convallis consectetur. Integer urna justo, malesuada vel viverra in, ornare eget felis. Etiam nec metus tempus tellus semper
-                        egestas at non purus. Pellentesque gravida lacus finibus nibh ultrices, vitae lacinia ante posuere. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Suspendisse convallis odio eu euismod
-                        consequat.<br></p>
-                    <button-counter></button-counter>
+
+                    <video autoplay loop style="width: 100%">
+                      <source src="@/assets/videos/CreateCommunity.mp4" type="video/mp4">
+                    </video>
                 </div>
             </div>
         </div>
