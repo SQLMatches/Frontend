@@ -118,7 +118,7 @@ h1, h2 {
   cursor: pointer;
 }
 
-.list-unstyled.matches ul > li:not(first-child) {
+.matches > li:not(first-child) {
   margin-top: 20px;
 }
 
