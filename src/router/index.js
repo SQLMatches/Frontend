@@ -42,6 +42,13 @@ export default new Router({
       }
     },
     {
+      path: '/download/:matchID',
+      name: 'DemoDownload',
+      beforeEnter: (to, from, next) => {
+        window.location.href = Axios.defaults.baseURL + `/match/${to.params.matchID}/download/`
+      }
+    },
+    {
       path: '*',
       name: 'PageNotFound',
       component: PageNotFound
