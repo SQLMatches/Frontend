@@ -12,7 +12,7 @@
         </b-navbar-nav>
 
         <b-navbar-nav class="ml-auto">
-          <b-nav-item href="#"><div class="btn btn-info btn-lg" role="button">Create Community&nbsp; <b-icon icon="plus-circle-fill" variant="light"></b-icon></div></b-nav-item>
+          <b-nav-item :to="{name: 'CreateCommunity'}"><div class="btn btn-info btn-lg" role="button">Create Community&nbsp; <b-icon icon="plus-circle-fill" variant="light"></b-icon></div></b-nav-item>
           <b-nav-item v-if="!loggedIn" :to="{name: 'Login'}"><div class="btn btn-primary btn-lg" role="button">&nbsp;Login&nbsp; <b-icon icon="chevron-double-right" variant="light"></b-icon></div></b-nav-item>
           <b-nav-item v-else :to="{name: 'Logout'}"><div class="btn btn-primary btn-lg" role="button">&nbsp;Logout&nbsp; <b-icon icon="chevron-double-left" variant="light"></b-icon></div></b-nav-item>
         </b-navbar-nav>
