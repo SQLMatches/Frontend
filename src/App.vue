@@ -12,7 +12,8 @@
         </b-navbar-nav>
 
         <b-navbar-nav class="ml-auto">
-          <b-nav-item :to="{name: 'CreateCommunity'}"><div class="btn btn-info btn-lg" role="button">Create Community&nbsp; <b-icon icon="plus-circle-fill" variant="light"></b-icon></div></b-nav-item>
+          <b-nav-item v-if="communityName === null" :to="{name: 'CreateCommunity'}"><div class="btn btn-info btn-lg" role="button">Create Community&nbsp; <b-icon icon="plus-circle-fill" variant="light"></b-icon></div></b-nav-item>
+          <b-nav-item v-else :to="{name: 'CommunityPage', params: {'communityName': communityName}}"><div class="btn btn-info btn-lg" role="button">Go to {{ communityName }}</div></b-nav-item>
           <b-nav-item v-if="!loggedIn" :to="{name: 'Login'}"><div class="btn btn-primary btn-lg" role="button">&nbsp;Login&nbsp; <b-icon icon="chevron-double-right" variant="light"></b-icon></div></b-nav-item>
           <b-nav-item v-else :to="{name: 'Logout'}"><div class="btn btn-primary btn-lg" role="button">&nbsp;Logout&nbsp; <b-icon icon="chevron-double-left" variant="light"></b-icon></div></b-nav-item>
         </b-navbar-nav>
@@ -39,12 +40,14 @@ export default {
   name: 'App',
   data () {
     return {
-      loggedIn: false
+      loggedIn: false,
+      communityName: null
     }
   },
   created () {
-    axios.get('/steam/test').then(_ => {
+    axios.get('/community/').then(res => {
       this.loggedIn = true
+      this.communityName = res.data.data.community_name
     }).catch(_ => {
       this.loggedIn = false
     })
