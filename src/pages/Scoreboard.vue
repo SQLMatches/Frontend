@@ -5,7 +5,7 @@
                 <div class="card-body">
                     <h2 class="text-center text-light">Team {{ scoreboard.team_1_name }}</h2>
                     <div class="table-responsive table-borderless">
-                      <scorecard :team="scoreboard.team_1"></scorecard>
+                      <scorecard :team="scoreboard.team_1" :communityName="$route.params.communityName"></scorecard>
                     </div>
                 </div>
             </div>
@@ -30,7 +30,7 @@
                 <div class="card-body">
                     <h2 class="text-center text-light">Team {{ scoreboard.team_2_name }}</h2>
                     <div class="table-responsive table-borderless">
-                      <scorecard :team="scoreboard.team_2"></scorecard>
+                      <scorecard :team="scoreboard.team_2" :communityName="$route.params.communityName"></scorecard>
                     </div>
                 </div>
             </div>

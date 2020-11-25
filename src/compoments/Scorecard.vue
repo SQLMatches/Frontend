@@ -34,11 +34,12 @@
 <script>
 export default {
   props: [
-    'team'
+    'team',
+    'communityName'
   ],
   methods: {
     loadSteamPage (steamID) {
-      window.open(`https://steamcommunity.com/profiles/${steamID}`, '_blank')
+      this.$router.push({name: 'Profile', params: {'communityName': this.communityName, 'steamID': steamID}})
     }
   }
 }

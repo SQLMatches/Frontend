@@ -28,9 +28,13 @@ export default new Router({
       name: 'CommunityPage'
     },
     {
-      path: '/c/:communityName/s/:matchID',
+      path: '/c/:communityName/scoreboard/:matchID',
       name: 'Scoreboard',
       component: Scoreboard
+    },
+    {
+      path: '/c/:communityName/profile/:steamID',
+      name: 'Profile'
     },
     {
       path: '/create',
