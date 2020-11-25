@@ -116,9 +116,11 @@ export default {
   },
   methods: {
     getMatches () {
-      axios.post(`/matches/?community_name=${this.$route.params.communityName}`, {search: this.$route.params.steamID}).then(res => {
-        this.matches = res.data.data
-      })
+      if (this.matches.length === 0) {
+        axios.post(`/matches/?community_name=${this.$route.params.communityName}`, {search: this.$route.params.steamID}).then(res => {
+          this.matches = res.data.data
+        })
+      }
     }
   }
 }
