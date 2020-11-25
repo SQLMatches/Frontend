@@ -339,3 +339,43 @@ a:hover {
   color: #bf1bda;
 }
 
+.stats-card h3, p {
+  margin-bottom: 0;
+}
+
+.stats-card {
+  background-color: #22212c;
+  margin-bottom: 30px;
+}
+
+.nav-link[role=tab] {
+  box-shadow: none!important;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  border-radius: 0px;
+  font-size: 17px;
+  width: 100%;
+  color: #fff !important;
+  background: #9c27b0 -webkit-gradient(linear, left top, left bottom, from(#ab47bc), to(#9c27b0)) repeat-x;
+  background: #9c27b0 linear-gradient(180deg, #ab47bc, #9c27b0) repeat-x;
+}
+
+.nav-tabs[role=tablist] {
+  border: none;
+  outline: none;
+  padding: 5px;
+}
+
+.nav-tabs[role=tablist] > li:not(:first-child) {
+  margin-left:5px;
+}
+
+.nav-link[role=tab].active, .nav-link[role=tab]:hover, .nav-link[role=tab]:active {
+  background: inherit;
+  background-color: #7e3c8a!important;
+}
+
+.nav-link[role=tab]:focus {
+  outline: none!important;
+}

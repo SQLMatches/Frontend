@@ -7,6 +7,7 @@ import Matches from '@/pages/Matches'
 import Scoreboard from '@/pages/Scoreboard'
 import PageNotFound from '@/pages/PageNotFound'
 import Create from '@/pages/Create'
+import Profile from '@/pages/Profile'
 
 Vue.use(Router)
 
@@ -34,7 +35,8 @@ export default new Router({
     },
     {
       path: '/c/:communityName/profile/:steamID',
-      name: 'Profile'
+      name: 'Profile',
+      component: Profile
     },
     {
       path: '/create',
