@@ -24,45 +24,13 @@
 </template>
 
 <script>
-import axios from 'axios'
-
 import SearchBar from './SearchBar.vue'
 
 export default {
   name: 'Communities',
-  data () {
-    return {
-      communities: [],
-      notSearch: true,
-      connection: null
-    }
-  },
-  methods: {
-    getCommunities (search = '', page = 1, desc = true) {
-      if (search !== '') {
-        this.notSearch = false
-      } else {
-        this.notSearch = true
-      }
-
-      axios.post('/communities/', {'search': search, 'page': page, 'desc': desc}).then(res => {
-        this.communities = res.data.data
-      }).catch(_ => {
-        this.$router.push({name: 'Login'})
-      })
-    }
-  },
-  created () {
-    this.getCommunities()
-
-    this.connection = new WebSocket('ws://localhost/api/ws/communities/')
-    this.connection.onmessage = (event) => {
-      if (this.notSearch) {
-        var newCommunities = (JSON.parse(event.data)).data
-        console.log(newCommunities)
-      }
-    }
-  },
+  props: [
+    'communities'
+  ],
   components: {
     SearchBar
   }

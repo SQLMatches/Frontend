@@ -24,26 +24,10 @@
 </template>
 
 <script>
-import axios from 'axios'
-
 export default {
   name: 'Games',
-  data () {
-    return {
-      matches: []
-    }
-  },
-  methods: {
-    getMatches (url = '/communities/matches/', search = '', page = 1, desc = true) {
-      axios.post(url, {'search': search, 'page': page, 'desc': desc}).then(res => {
-        this.matches = res.data.data
-      }).catch(_ => {
-        this.$router.push({name: 'Login'})
-      })
-    }
-  },
-  created () {
-    this.getMatches()
-  }
+  props: [
+    'matches'
+  ]
 }
 </script>

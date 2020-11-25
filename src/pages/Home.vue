@@ -18,12 +18,12 @@
             <div class="card bg-dark content-div">
                 <div class="card-body">
                     <h3 class="text-light card-title">Recent Matches</h3>
-                    <games></games>
+                    <games :matches="matches"></games>
                 </div>
             </div>
         </div>
     </div>
-    <communities></communities>
+    <communities :communities="communities"></communities>
   </div>
 </template>
 
@@ -31,11 +31,25 @@
 import Communities from '../compoments/Communities.vue'
 import Games from '../compoments/Games.vue'
 
+import axios from 'axios'
+
 export default {
   name: 'Home',
   components: {
     Communities,
     Games
+  },
+  data () {
+    return {
+      communities: [],
+      matches: []
+    }
+  },
+  created () {
+    axios.get('/communities/all/').then(res => {
+      this.communities = res.data.data.communities
+      this.matches = res.data.data.matches
+    })
   }
 }
 </script>
