@@ -3,7 +3,7 @@
     <b-navbar toggleable="lg" type="dark" style="background-color: #2b2640;">
       <div class="text-light" style="font-family: Alata, sans-serif;">
         <b-navbar-brand v-if="communityPageName == null" :to="{name: 'Home'}">SQLMatches</b-navbar-brand>
-        <b-navbar-brand v-else :to="{name: 'CommunityPage', params: {'communityName': communityPageName}}">{{ communityPageName }}</b-navbar-brand>
+        <b-navbar-brand v-else :to="{name: 'CommunityPage', params: {'communityName': communityPageName}}">{{ communityPageName }} <span style="font-size:0.5em">Hosted by SQLMatches</span></b-navbar-brand>
       </div>
 
       <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
