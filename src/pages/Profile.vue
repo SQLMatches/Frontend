@@ -1,5 +1,7 @@
 <template>
     <div class="card text-light bg-dark content-div">
+        <b-alert v-if="vacBans > 0" variant="warning" show>{{ profile.name }} has {{ vacBans }} VAC Ban<span v-if="vacBans > 1">s</span></b-alert>
+
         <div class="card-body text-center"><img class="rounded-circle" :src="profilePfp" width="112">
             <h1>{{ profile.name }}</h1>
         </div>
@@ -93,6 +95,7 @@ export default {
   data () {
     return {
       profilePfp: '',
+      vacBans: 0,
       profile: {},
       matches: []
     }
@@ -101,6 +104,7 @@ export default {
     axios.get(`https://cors-anywhere.herokuapp.com/http://steamcommunity.com/profiles/${this.$route.params.steamID}?xml=1`, {responseType: 'text'}).then(res => {
       var steamXml = new DOMParser().parseFromString(res.data, 'text/xml')
       this.profilePfp = steamXml.getElementsByTagName('avatarFull')[0].childNodes[0].nodeValue
+      this.vacBans = steamXml.getElementsByTagName('vacBanned')[0].childNodes[0].nodeValue
     }).catch(_ => {
       this.$router.push({name: 'PageNotFound'})
     })
