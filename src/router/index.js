@@ -7,6 +7,7 @@ import Scoreboard from '@/pages/Scoreboard'
 import PageNotFound from '@/pages/PageNotFound'
 import Create from '@/pages/Create'
 import Profile from '@/pages/Profile'
+import Community from '@/pages/Community'
 
 Vue.use(Router)
 
@@ -20,7 +21,8 @@ export default new Router({
     },
     {
       path: '/c/:communityName',
-      name: 'CommunityPage'
+      name: 'CommunityPage',
+      component: Community
     },
     {
       path: '/c/:communityName/scoreboard/:matchID',
