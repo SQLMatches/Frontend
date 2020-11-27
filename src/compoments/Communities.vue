@@ -7,7 +7,7 @@
 
                   <searchBar></searchBar>
 
-                  <div class="row">
+                  <div v-if="communities.length > 0" class="row">
                       <div class="col-md-3" v-for="(community, index) in communities" :key="index">
                         <router-link :to="{name: 'CommunityPage', params: {'communityName': community.community_name}}">
                           <div class="card light team">
@@ -19,6 +19,7 @@
                         </router-link>
                       </div>
                   </div>
+                  <h3 v-else class="text-center text-light">No communities</h3>
               </div>
           </div>
       </div>

@@ -25,8 +25,8 @@ export default {
       matches: []
     }
   },
-  created () {
-    axios.post(`/matches/?community_name=${this.$route.params.communityName}`).then(res => {
+  async created () {
+    await axios.post(`/matches/?community_name=${this.$route.params.communityName}`).then(res => {
       this.matches = res.data.data
     })
   }

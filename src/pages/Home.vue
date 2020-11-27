@@ -45,8 +45,8 @@ export default {
       matches: []
     }
   },
-  created () {
-    axios.get('/communities/all/').then(res => {
+  async created () {
+    await axios.get('/communities/all/').then(res => {
       this.communities = res.data.data.communities
       this.matches = res.data.data.matches
     })

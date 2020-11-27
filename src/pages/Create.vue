@@ -41,8 +41,8 @@ export default {
       communityName: null
     }
   },
-  created () {
-    axios.get('/community/').then(res => {
+  async created () {
+    await axios.get('/community/').then(res => {
       this.communityName = res.data.data.community_name
     })
   }

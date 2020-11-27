@@ -54,7 +54,7 @@ export default {
     }
   },
   methods: {
-    getScoreboard (matchID, communityName) {
+    async getScoreboard (matchID, communityName) {
       axios.get(`/match/${matchID}/?community_name=${communityName}`).then(res => {
         this.scoreboard = res.data.data
       }).catch(_ => {
@@ -62,8 +62,8 @@ export default {
       })
     }
   },
-  created () {
-    this.getScoreboard(this.$route.params.matchID, this.$route.params.communityName)
+  async created () {
+    await this.getScoreboard(this.$route.params.matchID, this.$route.params.communityName)
   }
 }
 </script>

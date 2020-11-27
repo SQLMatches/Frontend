@@ -2,8 +2,10 @@
     <div class="card text-light bg-dark content-div">
         <b-alert v-if="vacBans > 0" variant="warning" show>{{ profile.name }} has {{ vacBans }} VAC Ban<span v-if="vacBans > 1">s</span></b-alert>
 
-        <div class="card-body text-center"><img class="rounded-circle" :src="profilePfp" width="112">
-            <h1>{{ profile.name }}</h1>
+        <div class="card-body text-center">
+          <img v-if="profilePfp !== ''" class="rounded-circle" :src="profilePfp" width="112">
+          <b-spinner v-else label="Spinning"></b-spinner>
+          <h1>{{ profile.name }}</h1>
         </div>
         <div class="card-header">
           <b-tabs fill>
@@ -100,8 +102,8 @@ export default {
       matches: []
     }
   },
-  created () {
-    axios.get(`https://cors-anywhere.herokuapp.com/http://steamcommunity.com/profiles/${this.$route.params.steamID}?xml=1`, {responseType: 'text'}).then(res => {
+  async created () {
+    await axios.get(`https://cors-anywhere.herokuapp.com/http://steamcommunity.com/profiles/${this.$route.params.steamID}?xml=1`, {responseType: 'text'}).then(res => {
       var steamXml = new DOMParser().parseFromString(res.data, 'text/xml')
       this.profilePfp = steamXml.getElementsByTagName('avatarFull')[0].childNodes[0].nodeValue
       this.vacBans = steamXml.getElementsByTagName('vacBanned')[0].childNodes[0].nodeValue
@@ -109,7 +111,7 @@ export default {
       this.$router.push({name: 'PageNotFound'})
     })
 
-    axios.get(`/profile/${this.$route.params.steamID}/?community_name=${this.$route.params.communityName}`).then(res => {
+    await axios.get(`/profile/${this.$route.params.steamID}/?community_name=${this.$route.params.communityName}`).then(res => {
       this.profile = res.data.data
     }).catch(_ => {
       this.$router.push({name: 'PageNotFound'})
@@ -119,9 +121,9 @@ export default {
     Games
   },
   methods: {
-    getMatches () {
+    async getMatches () {
       if (this.matches.length === 0) {
-        axios.post(`/matches/?community_name=${this.$route.params.communityName}`, {search: this.$route.params.steamID}).then(res => {
+        await axios.post(`/matches/?community_name=${this.$route.params.communityName}`, {search: this.$route.params.steamID}).then(res => {
           this.matches = res.data.data
         })
       }

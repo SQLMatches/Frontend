@@ -43,8 +43,8 @@ export default {
       communityPageName: null
     }
   },
-  created () {
-    axios.get('/community/').then(res => {
+  async created () {
+    await axios.get('/community/').then(res => {
       this.loggedIn = true
       this.communityName = res.data.data.community_name
     }).catch(_ => {
