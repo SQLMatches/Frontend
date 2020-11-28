@@ -6,9 +6,9 @@
               <!-- Start: Steps Progressbar -->
               <div class="steps-progressbar">
                   <ul>
-                      <li class="previous">Start</li>
-                      <li v-bind:class="{'active':stepCounter === 0, 'previous': stepCounter > 0}" v-on:click="setStepValue(0)" style="cursor: pointer;">Community details</li>
-                      <li v-bind:class="{'active':stepCounter === 1, 'previous': stepCounter > 1}" v-on:click="setStepValue(1)" style="cursor: pointer;">Setting up servers</li>
+                      <li class="previous" v-on:click="setStepValue(0)" style="cursor: pointer;">Start</li>
+                      <li v-bind:class="{'active':stepCounter === 0, 'previous': stepCounter > 0}" v-on:click="setStepValue(0)" style="cursor: pointer;">Details</li>
+                      <li v-bind:class="{'active':stepCounter === 1, 'previous': stepCounter > 1}" v-on:click="setStepValue(1)" style="cursor: pointer;">Upload size</li>
                       <li v-bind:class="{'active':stepCounter === 2, 'previous': stepCounter > 2}" v-on:click="setStepValue(2)" style="cursor: pointer;">Finished</li>
                   </ul>
               </div>
@@ -16,12 +16,38 @@
           </div>
       </div>
       <div class="card bg-dark content-div">
-          <div class="card-body">
+          <div class="card-body text-light create-community">
             <div v-if="stepCounter === 0">
-              <b-form-input placeholder="Community name"></b-form-input>
+              <b-form-group label="Community Name" label-for="community-name">
+                <b-form-input id="community-name" placeholder="E.g. NexusLeague"></b-form-input>
+              </b-form-group>
+
+              <b-form-group label="Logo" label-for="community-pfp">
+                <b-form-file id="community-pfp" plain></b-form-file>
+              </b-form-group>
+
+              <b-form-group label="I'm using this for" label-for="usage-question" style="margin-top:20px">
+                <b-form-radio name="usage-question">Personal servers</b-form-radio>
+                <b-form-radio name="usage-question">Community servers</b-form-radio>
+                <b-form-radio name="usage-question">Team servers</b-form-radio>
+                <b-form-radio name="usage-question">Organization servers</b-form-radio>
+              </b-form-group>
+
+                <b-form-checkbox v-model="form.tosStatus" :value="true">
+                  I accept the terms and use
+                </b-form-checkbox>
             </div>
 
-            <button v-if="stepCounter < 2" v-on:click="stepCounter++" class="btn btn-info btn-block btn-lg" type="button">Next&nbsp;<b-icon icon="chevron-double-right" variant="light"></b-icon></button>
+            <div v-else-if="stepCounter === 1">
+              <label for="cost">Max upload size</label>
+              <b-form-input type="range" name="cost" :min="minUpload" :max="maxUpload" v-model="form.uploadSize"></b-form-input>
+              <div>Max upload size: {{ form.uploadSize }} MB</div>
+              <div>Cost per month: {{ ((form.uploadSize - minUpload) * costPerMb).toFixed(2) }} USD</div>
+              <div class="mt-2">SQLMatches compresses demos, {{ minUpload }} MB should be more then enough for a 10 slot, 16 to 32 tick demo.</div>
+            </div>
+
+            <button v-if="stepCounter < 2 && form.tosStatus" style="margin-top:25px;" v-on:click="stepCounter++" class="btn btn-info btn-block btn-lg" type="button">Next&nbsp;<b-icon icon="chevron-double-right" variant="light"></b-icon></button>
+            <button v-else-if="!form.tosStatus" class="btn btn-info btn-block btn-lg" type="button" disabled>Next&nbsp;<b-icon icon="chevron-double-right" variant="light"></b-icon></button>
             <button v-else class="btn btn-info btn-block btn-lg" type="button">Create community&nbsp;<b-icon icon="hand-thumbs-up" variant="light"></b-icon></button>
           </div>
       </div>
@@ -46,7 +72,14 @@ export default {
     return {
       communityName: null,
       stepCounter: 0,
-      steamID: null
+      steamID: null,
+      costPerMb: 0.15,
+      minUpload: 50,
+      maxUpload: 150,
+      form: {
+        uploadSize: 50,
+        tosStatus: false
+      }
     }
   },
   async created () {
@@ -58,7 +91,9 @@ export default {
   },
   methods: {
     setStepValue (value) {
-      this.stepCounter = value
+      if (this.form.tosStatus) {
+        this.stepCounter = value
+      }
     },
     async createCommunity () {
     }

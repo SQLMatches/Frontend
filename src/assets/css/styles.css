@@ -136,24 +136,24 @@ h1, h2 {
   margin-bottom: 25px;
 }
 
+.search-container input[type="text"], .search-container textarea {
+  outline: none;
+  box-shadow: none !important;
+  border: none !important;
+  color: #fff !important;
+}
+
 .search-input {
   border: none;
   background-color: #22212c;
   padding: 10px;
   width: 100%;
-  color: #fff;
   -webkit-box-shadow: none !important;
   box-shadow: none !important;
 }
 
 .search-btn {
   border-radius: 0 !important;
-}
-
-input[type="text"], textarea {
-  outline: none;
-  box-shadow: none !important;
-  border: none !important;
 }
 
 .table-dark {
@@ -378,4 +378,27 @@ a:hover {
 
 .nav-link[role=tab]:focus {
   outline: none!important;
+}
+
+.create-community .form-control::placeholder {
+  color: #d1d1d1 !important;
+}
+
+.create-community label {
+  font-size: 1.4em;
+  padding: 0;
+}
+
+.create-community input[type=text]:focus {   
+  box-shadow: inset 0 -1px 0 #bbbbbb !important;
+}
+
+.create-community input {
+  color: #fff !important;
+}
+
+.custom-range::-webkit-slider-thumb {
+  background: #f87ebd -webkit-gradient(linear, left top, left bottom, from(#f87ebd), to(#de60a1)) repeat-x;
+  background: #f87ebd linear-gradient(180deg, #f87ebd, #de60a1) repeat-x;
+  border-color: #f87ebd;
 }
