@@ -19,7 +19,7 @@
           <div class="card-body text-light create-community">
             <div v-if="stepCounter === 0">
               <b-form-group label="Community Name" label-for="community-name">
-                <b-form-input id="community-name" v-model="form.communityName" v-on:input="validateCommmunityName()" :state="communityNameState" placeholder="E.g. NexusLeague" required></b-form-input>
+                <b-form-input id="community-name" v-model="form.community_name" v-on:input="validateCommmunityName()" :state="communityNameState" placeholder="E.g. NexusLeague" required></b-form-input>
                 <p v-if="communityNameState === false">No special characters (@! etc.). No spaces. 4 - 32 characters.</p>
               </b-form-group>
 
@@ -28,28 +28,28 @@
               </b-form-group>
 
               <b-form-group label="I'm using this for" label-for="usage-question" style="margin-top:20px">
-                <b-form-radio name="usage-question" value="personal" v-model="form.usage">Personal servers</b-form-radio>
-                <b-form-radio name="usage-question" value="community" v-model="form.usage">Community servers</b-form-radio>
-                <b-form-radio name="usage-question" value="team" v-model="form.usage">Team servers</b-form-radio>
-                <b-form-radio name="usage-question" value="organization" v-model="form.usage">Organization servers</b-form-radio>
+                <b-form-radio name="usage-question" value="personal" v-model="form.community_type">Personal servers</b-form-radio>
+                <b-form-radio name="usage-question" value="community" v-model="form.community_type">Community servers</b-form-radio>
+                <b-form-radio name="usage-question" value="team" v-model="form.community_type">Team servers</b-form-radio>
+                <b-form-radio name="usage-question" value="organization" v-model="form.community_type">Organization servers</b-form-radio>
               </b-form-group>
 
-              <b-form-checkbox v-model="form.tosStatus" :value="true">
+              <b-form-checkbox v-model="tosStatus" :value="true">
                 I accept the terms and use
               </b-form-checkbox>
             </div>
 
             <div v-else-if="stepCounter === 1">
               <label for="cost">Max upload size</label>
-              <b-form-input type="range" name="cost" :min="minUpload" :max="maxUpload" v-model="form.uploadSize"></b-form-input>
-              <div>Max upload size: {{ form.uploadSize }} MB</div>
-              <div>Cost per month: {{ ((form.uploadSize - minUpload) * costPerMb).toFixed(2) }} USD</div>
+              <b-form-input type="range" name="cost" :min="minUpload" :max="maxUpload" v-model="form.max_upload"></b-form-input>
+              <div>Max upload size: {{ form.max_upload }} MB</div>
+              <div>Cost per month: {{ ((form.max_upload - minUpload) * costPerMb).toFixed(2) }} USD</div>
               <div class="mt-2">SQLMatches compresses demos, {{ minUpload }} MB should be more then enough for a 10 slot, 16 to 32 tick demo.</div>
             </div>
 
-            <button v-if="stepCounter < 2 && form.tosStatus && communityNameState" style="margin-top:25px;" v-on:click="stepCounter++" class="btn btn-info btn-block btn-lg" type="button">Next&nbsp;<b-icon icon="chevron-double-right" variant="light"></b-icon></button>
-            <button v-else-if="!form.tosStatus || !communityNameState" class="btn btn-info btn-block btn-lg" type="button" disabled>Next&nbsp;<b-icon icon="chevron-double-right" variant="light"></b-icon></button>
-            <button v-else class="btn btn-info btn-block btn-lg" type="button">Create community&nbsp;<b-icon icon="hand-thumbs-up" variant="light"></b-icon></button>
+            <button v-if="stepCounter < 2 && tosStatus && communityNameState" style="margin-top:25px;" v-on:click="stepCounter++" class="btn btn-info btn-block btn-lg" type="button">Next&nbsp;<b-icon icon="chevron-double-right" variant="light"></b-icon></button>
+            <button v-else-if="!tosStatus || !communityNameState" class="btn btn-info btn-block btn-lg" type="button" disabled>Next&nbsp;<b-icon icon="chevron-double-right" variant="light"></b-icon></button>
+            <button v-else class="btn btn-info btn-block btn-lg" type="button" v-on:click="createCommunity()">Create community&nbsp;<b-icon icon="hand-thumbs-up" variant="light"></b-icon></button>
           </div>
       </div>
     </div>
@@ -74,15 +74,15 @@ export default {
       communityName: null,
       stepCounter: 0,
       costPerMb: 0.15,
-      minUpload: 50,
-      maxUpload: 150,
+      minUpload: 50.0,
+      maxUpload: 100.0,
       communityNameRegExp: new RegExp('^[a-zA-Z0-9]{4,32}$'),
       communityNameState: null,
+      tosStatus: false,
       form: {
-        communityName: '',
-        usage: '',
-        uploadSize: 50,
-        tosStatus: false
+        community_name: '',
+        community_type: null,
+        max_upload: 50.0
       }
     }
   },
@@ -93,18 +93,23 @@ export default {
   },
   methods: {
     setStepValue (value) {
-      if (this.form.tosStatus && this.communityNameState) {
+      if (this.tosStatus && this.communityNameState) {
         this.stepCounter = value
       }
     },
     validateCommmunityName () {
-      if (this.communityNameRegExp.test(this.form.communityName)) {
+      if (this.communityNameRegExp.test(this.form.community_name)) {
         this.communityNameState = true
       } else {
         this.communityNameState = false
       }
     },
     async createCommunity () {
+      await axios.post('/community/', this.form).then(res => {
+        console.log(res.data)
+      }).catch(error => {
+        console.log(error.response.data)
+      })
     }
   }
 }
