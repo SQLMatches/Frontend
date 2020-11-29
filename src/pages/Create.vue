@@ -19,7 +19,8 @@
           <div class="card-body text-light create-community">
             <div v-if="stepCounter === 0">
               <b-form-group label="Community Name" label-for="community-name">
-                <b-form-input id="community-name" placeholder="E.g. NexusLeague"></b-form-input>
+                <b-form-input id="community-name" v-model="form.communityName" v-on:input="validateCommmunityName()" :state="communityNameState" placeholder="E.g. NexusLeague" required></b-form-input>
+                <p v-if="communityNameState === false">No special characters (@! etc.). No spaces. 4 - 32 characters.</p>
               </b-form-group>
 
               <b-form-group label="Logo" label-for="community-pfp">
@@ -27,15 +28,15 @@
               </b-form-group>
 
               <b-form-group label="I'm using this for" label-for="usage-question" style="margin-top:20px">
-                <b-form-radio name="usage-question">Personal servers</b-form-radio>
-                <b-form-radio name="usage-question">Community servers</b-form-radio>
-                <b-form-radio name="usage-question">Team servers</b-form-radio>
-                <b-form-radio name="usage-question">Organization servers</b-form-radio>
+                <b-form-radio name="usage-question" value="personal" v-model="form.usage">Personal servers</b-form-radio>
+                <b-form-radio name="usage-question" value="community" v-model="form.usage">Community servers</b-form-radio>
+                <b-form-radio name="usage-question" value="team" v-model="form.usage">Team servers</b-form-radio>
+                <b-form-radio name="usage-question" value="organization" v-model="form.usage">Organization servers</b-form-radio>
               </b-form-group>
 
-                <b-form-checkbox v-model="form.tosStatus" :value="true">
-                  I accept the terms and use
-                </b-form-checkbox>
+              <b-form-checkbox v-model="form.tosStatus" :value="true">
+                I accept the terms and use
+              </b-form-checkbox>
             </div>
 
             <div v-else-if="stepCounter === 1">
@@ -46,8 +47,8 @@
               <div class="mt-2">SQLMatches compresses demos, {{ minUpload }} MB should be more then enough for a 10 slot, 16 to 32 tick demo.</div>
             </div>
 
-            <button v-if="stepCounter < 2 && form.tosStatus" style="margin-top:25px;" v-on:click="stepCounter++" class="btn btn-info btn-block btn-lg" type="button">Next&nbsp;<b-icon icon="chevron-double-right" variant="light"></b-icon></button>
-            <button v-else-if="!form.tosStatus" class="btn btn-info btn-block btn-lg" type="button" disabled>Next&nbsp;<b-icon icon="chevron-double-right" variant="light"></b-icon></button>
+            <button v-if="stepCounter < 2 && form.tosStatus && communityNameState" style="margin-top:25px;" v-on:click="stepCounter++" class="btn btn-info btn-block btn-lg" type="button">Next&nbsp;<b-icon icon="chevron-double-right" variant="light"></b-icon></button>
+            <button v-else-if="!form.tosStatus || !communityNameState" class="btn btn-info btn-block btn-lg" type="button" disabled>Next&nbsp;<b-icon icon="chevron-double-right" variant="light"></b-icon></button>
             <button v-else class="btn btn-info btn-block btn-lg" type="button">Create community&nbsp;<b-icon icon="hand-thumbs-up" variant="light"></b-icon></button>
           </div>
       </div>
@@ -72,27 +73,35 @@ export default {
     return {
       communityName: null,
       stepCounter: 0,
-      steamID: null,
       costPerMb: 0.15,
       minUpload: 50,
       maxUpload: 150,
+      communityNameRegExp: new RegExp('^[a-zA-Z0-9]{4,32}$'),
+      communityNameState: null,
       form: {
+        communityName: '',
+        usage: '',
         uploadSize: 50,
         tosStatus: false
       }
     }
   },
   async created () {
-    this.steamID = localStorage.getItem('steamID')
-
     await axios.get('/community/').then(res => {
       this.communityName = res.data.data.community_name
     })
   },
   methods: {
     setStepValue (value) {
-      if (this.form.tosStatus) {
+      if (this.form.tosStatus && this.communityNameState) {
         this.stepCounter = value
+      }
+    },
+    validateCommmunityName () {
+      if (this.communityNameRegExp.test(this.form.communityName)) {
+        this.communityNameState = true
+      } else {
+        this.communityNameState = false
       }
     },
     async createCommunity () {
