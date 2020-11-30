@@ -39,7 +39,7 @@
               </b-form-checkbox>
             </div>
 
-            <div v-else-if="stepCounter === 1">
+            <div v-else-if="stepCounter === 1" style="margin-bottom:25px;">
               <label for="cost">Max upload size</label>
               <b-form-input type="range" name="cost" :min="minUpload" :max="maxUpload" v-model="form.max_upload"></b-form-input>
               <div>Max upload size: {{ form.max_upload }} MB</div>
@@ -47,7 +47,23 @@
               <div class="mt-2">SQLMatches compresses demos, {{ minUpload }} MB should be more then enough for a 10 slot, 16 to 32 tick demo.</div>
             </div>
 
-            <button v-if="stepCounter < 2 && tosStatus && communityNameState" style="margin-top:25px;" v-on:click="stepCounter++" class="btn btn-info btn-block btn-lg" type="button">Next&nbsp;<b-icon icon="chevron-double-right" variant="light"></b-icon></button>
+            <div v-else-if="stepCounter === 2" class="card" style="background-color:#22212c;margin-bottom:25px;">
+                <div class="card-body text-light create-community">
+                  <h4>Community Name</h4>
+                  <p>{{ form.community_name }}</p>
+
+                  <h4 style="margin-top:15px;">Community Type</h4>
+                  <p style="text-transform:capitalize;">{{ form.community_type }}</p>
+
+                  <h4 style="margin-top:15px;">Monthly Cost</h4>
+                  <p>{{ ((form.max_upload - minUpload) * costPerMb).toFixed(2) }} USD</p>
+
+                  <h4 style="margin-top:15px;">Max Upload</h4>
+                  <p>{{ form.max_upload }} MB</p>
+                </div>
+            </div>
+
+            <button v-if="stepCounter < 2 && tosStatus && communityNameState" v-on:click="stepCounter++" class="btn btn-info btn-block btn-lg" type="button">Next&nbsp;<b-icon icon="chevron-double-right" variant="light"></b-icon></button>
             <button v-else-if="!tosStatus || !communityNameState" class="btn btn-info btn-block btn-lg" type="button" disabled>Next&nbsp;<b-icon icon="chevron-double-right" variant="light"></b-icon></button>
             <button v-else class="btn btn-info btn-block btn-lg" type="button" v-on:click="createCommunity()">Create community&nbsp;<b-icon icon="hand-thumbs-up" variant="light"></b-icon></button>
           </div>
@@ -106,9 +122,7 @@ export default {
     },
     async createCommunity () {
       await axios.post('/community/', this.form).then(res => {
-        console.log(res.data)
-      }).catch(error => {
-        console.log(error.response.data)
+        window.location.href = `/c/${res.data.data.community_name}`
       })
     }
   }

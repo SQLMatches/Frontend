@@ -402,3 +402,16 @@ a:hover {
   background: #f87ebd linear-gradient(180deg, #f87ebd, #de60a1) repeat-x;
   border-color: #f87ebd;
 }
+
+.custom-control-input:checked ~ .custom-control-label::before {
+  background: #f87ebd -webkit-gradient(linear, left top, left bottom, from(#f87ebd), to(#de60a1)) repeat-x;
+  background: #f87ebd linear-gradient(180deg, #f87ebd, #de60a1) repeat-x;
+  border-color: #f87ebd;
+}
+
+.custom-radio .custom-control-input:checked~.custom-control-label::before,
+.custom-radio .custom-control-input:checked~.custom-control-label::after {
+  background: #f87ebd -webkit-gradient(linear, left top, left bottom, from(#f87ebd), to(#de60a1)) repeat-x;
+  background: #f87ebd linear-gradient(180deg, #f87ebd, #de60a1) repeat-x;
+  border-radius: 50%;
+}
