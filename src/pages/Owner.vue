@@ -40,8 +40,8 @@
           <div v-else-if="tabNumber === 1">
             <div v-if="matches.length > 0">
               <ul class="list-unstyled matches">
-                  <li v-for="(match, index) in matches" :key="index">
-                      <div class="card match" v-bind:class="{'selected-to-delete': matchesToDelete.includes(match.match_id)}" v-on:click="addMatchToDelete(match.match_id)" v-b-tooltip.hover :title="`${match.timestamp} - ${match.map}`">
+                  <li v-for="(match, index) in matches" :key="index" v-on:click="addMatchToDelete(match.match_id)">
+                      <div class="card match" v-bind:class="{'selected-to-delete': matchesToDelete.includes(match.match_id)}" v-b-tooltip.hover :title="`${match.timestamp} - ${match.map}`">
                         <img class="card-img w-100 d-block" :src="match.cover_image">
                           <div class="card-img-overlay d-flex d-xl-flex flex-column flex-grow-0 flex-shrink-0 justify-content-center align-items-center justify-content-xl-center align-items-xl-center">
                               <div class="row no-gutters row-cols-3 match">
@@ -98,7 +98,7 @@ export default {
     },
     addMatchToDelete (matchID) {
       if (this.matchesToDelete.includes(matchID)) {
-        this.matchesToDelete.splice(this.matchesToDelete.indexOf(matchID))
+        this.matchesToDelete.splice(this.matchesToDelete.indexOf(matchID), 1)
       } else {
         this.matchesToDelete.push(matchID)
       }
@@ -109,19 +109,14 @@ export default {
       })
     },
     async getMatches () {
-      await axios.post(`/matches/?community_name=${this.$route.params.communityName}`, {'require_scoreboard': false}).then(res => {
+      await axios.post(`/matches/?community_name=${this.$route.params.communityName}`, {require_scoreboard: false}).then(res => {
         this.matches = res.data.data
       })
     },
     async deleteMatches () {
-      await axios.delete(`/community/owner/matches?community_name=${this.$route.params.communityName}&check_ownership=true`, {'matches': this.matchesToDelete}).then(res => {
-        for (let index = 0; index < this.matches.length; index++) {
-          const element = this.matches[index]
-
-          if (this.matchesToDelete.includes(element.match_id)) {
-            this.matches.splice(this.matches.indexOf(element))
-          }
-        }
+      await axios.delete(`/community/owner/matches/?community_name=${this.$route.params.communityName}&check_ownership=true`, {data: {matches: this.matchesToDelete}}).then(async res => {
+        this.matchesToDelete = []
+        await this.getMatches()
       })
     }
   }
