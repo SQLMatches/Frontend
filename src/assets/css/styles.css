@@ -415,3 +415,12 @@ a:hover {
   background: #f87ebd linear-gradient(180deg, #f87ebd, #de60a1) repeat-x;
   border-radius: 50%;
 }
+
+.key-hidden {
+  filter: blur(5px);
+}
+
+.key-hidden:hover {
+  transition-duration: 0.6s;
+  filter: blur(0px);
+}
