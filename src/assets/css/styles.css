@@ -424,3 +424,8 @@ a:hover {
   transition-duration: 0.6s;
   filter: blur(0px);
 }
+
+.selected-to-delete {
+  border: 2px solid #aa0b0b!important;
+  transition-duration: 0.1s;
+}
