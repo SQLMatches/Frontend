@@ -118,9 +118,10 @@ export default {
     },
     async deleteMatches () {
       await axios.delete(`/community/owner/matches/?community_name=${this.$route.params.communityName}&check_ownership=true`, {data: {matches: this.matchesToDelete}}).then(async res => {
+        this.communityStats.total_matches -= this.matchesToDelete.length
         this.matchesToDelete = []
+
         await this.getMatches()
-        await this.getCommunity()
       })
     }
   }
