@@ -85,12 +85,7 @@ export default {
     }
   },
   async created () {
-    await axios.get(`/community/owner/?community_name=${this.$route.params.communityName}&check_ownership=true`).then(res => {
-      this.masterApiKey = res.data.data.community.master_api_key
-      this.communityStats = res.data.data.stats
-    }).catch(_ => {
-      this.$router.push({name: 'PageNotFound'})
-    })
+    await this.getCommunity()
   },
   methods: {
     changeTab (tab) {
@@ -102,6 +97,14 @@ export default {
       } else {
         this.matchesToDelete.push(matchID)
       }
+    },
+    async getCommunity () {
+      await axios.get(`/community/owner/?community_name=${this.$route.params.communityName}&check_ownership=true`).then(res => {
+        this.masterApiKey = res.data.data.community.master_api_key
+        this.communityStats = res.data.data.stats
+      }).catch(_ => {
+        this.$router.push({name: 'PageNotFound'})
+      })
     },
     async regenerateMaster () {
       await axios.post(`/community/owner/?community_name=${this.$route.params.communityName}&check_ownership=true`).then(res => {
@@ -117,6 +120,7 @@ export default {
       await axios.delete(`/community/owner/matches/?community_name=${this.$route.params.communityName}&check_ownership=true`, {data: {matches: this.matchesToDelete}}).then(async res => {
         this.matchesToDelete = []
         await this.getMatches()
+        await this.getCommunity()
       })
     }
   }
