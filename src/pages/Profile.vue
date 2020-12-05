@@ -103,18 +103,16 @@ export default {
     }
   },
   async created () {
-    await axios.get(`https://cors-anywhere.herokuapp.com/http://steamcommunity.com/profiles/${this.$route.params.steamID}?xml=1`, {responseType: 'text'}).then(res => {
-      var steamXml = new DOMParser().parseFromString(res.data, 'text/xml')
-      this.profilePfp = steamXml.getElementsByTagName('avatarFull')[0].childNodes[0].nodeValue
-      this.vacBans = steamXml.getElementsByTagName('vacBanned')[0].childNodes[0].nodeValue
-    }).catch(_ => {
-      this.$router.push({name: 'PageNotFound'})
-    })
-
     await axios.get(`/profile/${this.$route.params.steamID}/?community_name=${this.$route.params.communityName}`).then(res => {
       this.profile = res.data.data
     }).catch(_ => {
       this.$router.push({name: 'PageNotFound'})
+    })
+
+    await axios.get(`http://cors-anywhere.herokuapp.com/http://steamcommunity.com/profiles/${this.$route.params.steamID}?xml=1`, {responseType: 'text'}).then(res => {
+      var steamXml = new DOMParser().parseFromString(res.data, 'text/xml')
+      this.profilePfp = steamXml.getElementsByTagName('avatarFull')[0].childNodes[0].nodeValue
+      this.vacBans = steamXml.getElementsByTagName('vacBanned')[0].childNodes[0].nodeValue
     })
   },
   components: {
