@@ -60,8 +60,8 @@
                   </li>
               </ul>
 
-              <b-button variant="danger" v-if="matchesToDelete.length > 0" block v-on:click="deleteMatches()">Delete selected matches</b-button>
-              <b-button variant="danger" v-else block disabled>Delete selected matches</b-button>
+              <b-button variant="danger" v-if="matchesToDelete.length > 0" block v-on:click="deleteMatches()">Delete selected match<span v-if="matchesToDelete.length > 1">es</span></b-button>
+              <b-button variant="danger" v-else block disabled>Delete selected match</b-button>
             </div>
             <h3 v-else class="text-center text-light">No matches</h3>
           </div>
