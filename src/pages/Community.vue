@@ -3,6 +3,7 @@
       <div class="col-md-12">
           <div class="card bg-dark content-div">
               <div class="card-body">
+                  <search-bar v-on:input="getMatches" v-model="matchesSearch" :debounce="500"></search-bar>
                   <games :matches="matches"></games>
               </div>
           </div>
@@ -12,23 +13,38 @@
 
 <script>
 import Games from '../components/Games.vue'
+import SearchBar from '../components/SearchBar.vue'
 
 import axios from 'axios'
 
 export default {
   name: 'Community',
   components: {
-    Games
+    Games,
+    SearchBar
   },
   data () {
     return {
-      matches: []
+      matches: [],
+      matchesSearch: null
     }
   },
   async created () {
-    await axios.post(`/matches/?community_name=${this.$route.params.communityName}`).then(res => {
-      this.matches = res.data.data
-    })
+    await this.getMatches()
+  },
+  methods: {
+    async getMatches () {
+      var payload
+      if (this.matchesSearch) {
+        payload = {search: this.matchesSearch}
+      } else {
+        payload = null
+      }
+
+      await axios.post(`/matches/?community_name=${this.$route.params.communityName}`, payload).then(res => {
+        this.matches = res.data.data
+      })
+    }
   }
 }
 </script>
