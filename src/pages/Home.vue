@@ -23,13 +23,24 @@
             </div>
         </div>
     </div>
-    <communities :communities="communities"></communities>
+  <div class="row">
+      <div class="col-md-12">
+          <div class="card bg-dark content-div">
+              <div class="card-body">
+                  <h3 class="text-light card-title">Communities</h3>
+                  <search-bar v-on:input="test" v-model="communitySearch" :debounce="500"></search-bar>
+                  <communities :communities="communities"></communities>
+              </div>
+          </div>
+      </div>
+  </div>
   </div>
 </template>
 
 <script>
-import Communities from '../compoments/Communities.vue'
-import Games from '../compoments/Games.vue'
+import Communities from '../components/Communities.vue'
+import Games from '../components/Games.vue'
+import SearchBar from '../components/SearchBar.vue'
 
 import axios from 'axios'
 
@@ -37,12 +48,14 @@ export default {
   name: 'Home',
   components: {
     Communities,
-    Games
+    Games,
+    SearchBar
   },
   data () {
     return {
       communities: [],
-      matches: []
+      matches: [],
+      communitySearch: null
     }
   },
   async created () {
@@ -50,6 +63,11 @@ export default {
       this.communities = res.data.data.communities
       this.matches = res.data.data.matches
     })
+  },
+  methods: {
+    test () {
+      console.log(this.communitySearch)
+    }
   }
 }
 </script>

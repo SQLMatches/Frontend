@@ -41,7 +41,7 @@
 <script>
 import axios from 'axios'
 
-import Scorecard from '../compoments/Scorecard.vue'
+import Scorecard from '../components/Scorecard.vue'
 
 export default {
   name: 'Scoreboard',

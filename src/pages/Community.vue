@@ -11,7 +11,7 @@
 </template>
 
 <script>
-import Games from '../compoments/Games.vue'
+import Games from '../components/Games.vue'
 
 import axios from 'axios'
 

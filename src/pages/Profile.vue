@@ -90,7 +90,7 @@
 <script>
 import axios from 'axios'
 
-import Games from '../compoments/Games.vue'
+import Games from '../components/Games.vue'
 
 export default {
   name: 'Profile',
