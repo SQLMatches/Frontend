@@ -19,7 +19,7 @@
           <div class="card-body text-light create-community">
             <div v-if="stepCounter === 0">
               <b-form-group label="Community Name" label-for="community-name">
-                <b-form-input id="community-name" v-model="form.community_name" v-on:input="validateCommmunityName()" :state="communityNameState" placeholder="E.g. NexusLeague" required></b-form-input>
+                <b-form-input id="community-name" v-model="form.community_name" v-on:input="validateCommmunityName()" :state="communityNameState" autocomplete="off" placeholder="E.g. NexusLeague" required></b-form-input>
                 <p v-if="communityNameState === false">No special characters (@! etc.). No spaces. 4 - 32 characters.</p>
               </b-form-group>
 
