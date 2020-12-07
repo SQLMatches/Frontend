@@ -28,7 +28,7 @@
           <div class="card bg-dark content-div">
               <div class="card-body">
                   <h3 class="text-light card-title">Communities</h3>
-                  <search-bar v-on:input="test" v-model="communitySearch" :debounce="500"></search-bar>
+                  <search-bar v-on:input="getCommunities" v-model="communitySearch" :debounce="500"></search-bar>
                   <communities :communities="communities"></communities>
               </div>
           </div>
@@ -59,14 +59,19 @@ export default {
     }
   },
   async created () {
-    await axios.get('/communities/all/').then(res => {
-      this.communities = res.data.data.communities
-      this.matches = res.data.data.matches
-    })
+    await this.getHomeContents()
   },
   methods: {
-    test () {
-      console.log(this.communitySearch)
+    async getHomeContents () {
+      await axios.get('/communities/all/').then(res => {
+        this.communities = res.data.data.communities
+        this.matches = res.data.data.matches
+      })
+    },
+    async getCommunities () {
+      await axios.post('/communities/', {search: this.communitySearch}).then(res => {
+        this.communities = res.data.data
+      })
     }
   }
 }
