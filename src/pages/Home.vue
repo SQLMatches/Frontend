@@ -18,6 +18,7 @@
             <div class="card bg-dark content-div">
                 <div class="card-body">
                     <h3 class="text-light card-title">Recent Matches</h3>
+                    <search-bar v-on:input="getMatches" v-model="matchesSearch" :debounce="500"></search-bar>
                     <games :matches="matches"></games>
                 </div>
             </div>
@@ -55,7 +56,8 @@ export default {
     return {
       communities: [],
       matches: [],
-      communitySearch: null
+      communitySearch: null,
+      matchesSearch: null
     }
   },
   async created () {
@@ -71,6 +73,11 @@ export default {
     async getCommunities () {
       await axios.post('/communities/', {search: this.communitySearch}).then(res => {
         this.communities = res.data.data
+      })
+    },
+    async getMatches () {
+      await axios.post('/communities/matches', {search: this.matchesSearch}).then(res => {
+        this.matches = res.data.data
       })
     }
   }
