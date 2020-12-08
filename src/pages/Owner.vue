@@ -67,6 +67,14 @@
             <b-button variant="danger" v-if="matchesToDelete.length > 0" block v-on:click="deleteMatches()">Delete selected match<span v-if="matchesToDelete.length > 1">es</span></b-button>
             <b-button variant="danger" v-else block disabled>Delete selected match</b-button>
           </div>
+          <div v-else-if="tabNumber === 2">
+            <b-toast id="community-disable" class="create-community" :title="`Please enter '${this.$route.params.communityName}' to disable it.`" static no-auto-hide>
+              <b-form-input style="color:#fff;" v-model="communityNameDisable" v-on:input="validateCommunityName" :state="validCommunityName" type="text" placeholder="Community Name" autocomplete="off"></b-form-input>
+              <b-button v-if="validCommunityName" variant="danger" v-on:click="CommunityDisable" block>Confirm</b-button>
+              <b-button v-else variant="danger" block disabled>Confirm</b-button>
+            </b-toast>
+            <b-button variant="danger" v-on:click="$bvToast.show('community-disable')" block>Disable community</b-button>
+          </div>
         </div>
     </div>
   </div>
@@ -91,7 +99,9 @@ export default {
       tabNumber: 0,
       matches: [],
       matchesToDelete: [],
-      matchSearch: null
+      matchSearch: null,
+      communityNameDisable: null,
+      validCommunityName: null
     }
   },
   async created () {
@@ -139,6 +149,16 @@ export default {
 
         await this.getMatches()
       })
+    },
+    async CommunityDisable () {
+      if (this.communityNameDisable === this.$route.params.communityName) {
+        await axios.delete(`/community/owner/?community_name=${this.$route.params.communityName}&check_ownership=true`).then(res => {
+          window.location.href = '/'
+        })
+      }
+    },
+    validateCommunityName () {
+      this.validCommunityName = this.communityNameDisable === this.$route.params.communityName
     }
   }
 }

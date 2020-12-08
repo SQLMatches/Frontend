@@ -433,3 +433,17 @@ a:hover {
 .load-more {
   margin-top: 25px;
 }
+
+.toast-header {
+  background-color: #22212c;
+  color: #fff;
+  border: none;
+}
+
+.toast-body {
+  background-color: #272636;
+}
+
+button.close {
+  color: #fff!important;
+}
