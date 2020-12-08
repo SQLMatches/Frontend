@@ -22,7 +22,7 @@
             </router-link>
         </li>
     </ul>
-    <h3 v-else class="text-center text-light">No matches</h3>
+    <h3 v-else class="text-center text-light">No matches found</h3>
   </div>
 </template>
 

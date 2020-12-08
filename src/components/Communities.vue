@@ -12,7 +12,7 @@
           </router-link>
         </div>
     </div>
-    <h3 v-else class="text-center text-light">No communities</h3>
+    <h3 v-else class="text-center text-light">No communities found</h3>
   </div>
 </template>
 

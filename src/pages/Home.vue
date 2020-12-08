@@ -20,7 +20,7 @@
                     <h3 class="text-light card-title">Recent Matches</h3>
                     <search-bar v-on:input="getMatches()" v-model="matches.search" :debounce="500"></search-bar>
                     <games :matches="matches.list"></games>
-                    <load-more v-if="matches.list.length > 0 && !matches.hideLoadMore" v-model="matches.pageNumber" v-on:click="loadMoreMatches"></load-more>
+                    <load-more v-if="!matches.hideLoadMore" v-model="matches.pageNumber" v-on:click="loadMoreMatches"></load-more>
                 </div>
             </div>
         </div>
@@ -32,6 +32,7 @@
                   <h3 class="text-light card-title">Communities</h3>
                   <search-bar v-on:input="getCommunities()" v-model="communities.search" :debounce="500"></search-bar>
                   <communities :communities="communities.list"></communities>
+                  <load-more v-if="!communities.hideLoadMore" v-model="communities.pageNumber" v-on:click="loadMoreCommunities"></load-more>
               </div>
           </div>
       </div>
@@ -60,13 +61,15 @@ export default {
       communities: {
         list: [],
         search: null,
-        hideLoadMore: false
+        hideLoadMore: false,
+        newPerPage: 5
       },
       matches: {
         list: [],
         pageNumber: null,
         search: null,
-        hideLoadMore: false
+        hideLoadMore: false,
+        newPerPage: 5
       }
     }
   },
@@ -78,11 +81,33 @@ export default {
       await axios.get('/communities/all/').then(res => {
         this.communities.list = res.data.data.communities
         this.matches.list = res.data.data.matches
+
+        if (this.matches.newPerPage > this.matches.list.length) {
+          this.matches.hideLoadMore = true
+        }
+
+        if (this.communities.newPerPage > this.communities.list.length) {
+          this.communities.hideLoadMore = true
+        }
       })
     },
-    async getCommunities () {
-      await axios.post('/communities/', {search: this.communities.search}).then(res => {
-        this.communities.list = res.data.data
+    async getCommunities (addToCurrent = false) {
+      var payload = {}
+
+      if (this.communities.search) {
+        payload['search'] = this.communities.search
+      }
+
+      if (this.communities.pageNumber) {
+        payload['page'] = this.communities.pageNumber
+      }
+
+      await axios.post('/communities/', payload).then(res => {
+        if (!addToCurrent) {
+          this.communities.list = res.data.data
+        } else {
+          this.communities.list.concat(res.data.data)
+        }
       })
     },
     async getMatches (addToCurrent = false) {
@@ -107,8 +132,15 @@ export default {
     async loadMoreMatches () {
       var oldMatchLen = this.matches.list.length
       await this.getMatches(true)
-      if (oldMatchLen === this.matches.list.length || this.matches.list.length - oldMatchLen < 5) {
+      if (oldMatchLen === this.matches.list.length || this.matches.list.length - oldMatchLen < this.matches.newPerPage) {
         this.matches.hideLoadMore = true
+      }
+    },
+    async loadMoreCommunities () {
+      var oldCommunitiesLen = this.communities.list.length
+      await this.getCommunities(true)
+      if (oldCommunitiesLen === this.communities.list.length || this.communities.list.length - oldCommunitiesLen < this.communities.newPerPage) {
+        this.communities.hideLoadMore = true
       }
     }
   }
