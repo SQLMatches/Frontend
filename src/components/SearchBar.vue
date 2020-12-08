@@ -10,9 +10,12 @@ import _ from 'lodash'
 
 export default {
   name: 'SearchBar',
-  props: [
-    'debounce'
-  ],
+  props: {
+    'debounce': {
+      default: 500,
+      type: Number
+    }
+  },
   created () {
     this.inputDebounce = _.debounce(this.inputDebounce, this.debounce)
   },

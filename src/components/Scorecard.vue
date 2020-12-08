@@ -20,9 +20,16 @@
               <td>{{ player.kills }}</td>
               <td>{{ player.deaths }}</td>
               <td>{{ player.assists }}</td>
-              <td>{{ player.kdr }}</td>
-              <td>{{ player.hs_percentage }}%</td>
-              <td>{{ player.hit_percentage }}%</td>
+
+              <td v-if="player.kills > 0 && player.deaths > 0">{{ (player.kills / player.deaths).toFixed(2) }}</td>
+              <td v-else>0.0</td>
+
+              <td v-if="player.kills > 0 && player.headshots > 0">{{ (player.headshots / player.kills).toFixed(2) }}%</td>
+              <td v-else>0.0</td>
+
+              <td v-if="player.shots_fired > 0 && player.shots_hit > 0">{{ (player.shots_hit / player.shots_fired).toFixed(2) }}%</td>
+              <td v-else>0.0</td>
+
               <td>{{ player.mvps }}</td>
               <td>{{ player.score }}</td>
               <td>{{ player.ping }}</td>
