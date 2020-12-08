@@ -20,7 +20,7 @@
                     <h3 class="text-light card-title">Recent Matches</h3>
                     <search-bar v-on:input="getMatches()" v-model="matches.search" :debounce="500"></search-bar>
                     <games :matches="matches.list"></games>
-                    <load-more v-if="!matches.hideLoadMore" v-model="matches.pageNumber" v-on:click="loadMoreMatches"></load-more>
+                    <load-more v-if="!matches.hideLoadMore" v-on:click="loadMoreMatches"></load-more>
                 </div>
             </div>
         </div>
@@ -32,7 +32,7 @@
                   <h3 class="text-light card-title">Communities</h3>
                   <search-bar v-on:input="getCommunities()" v-model="communities.search" :debounce="500"></search-bar>
                   <communities :communities="communities.list"></communities>
-                  <load-more v-if="!communities.hideLoadMore" v-model="communities.pageNumber" v-on:click="loadMoreCommunities"></load-more>
+                  <load-more v-if="!communities.hideLoadMore" v-on:click="loadMoreCommunities"></load-more>
               </div>
           </div>
       </div>
@@ -66,10 +66,9 @@ export default {
       },
       matches: {
         list: [],
-        pageNumber: null,
         search: null,
         hideLoadMore: false,
-        newPerPage: 10
+        newPerPage: 5
       }
     }
   },
@@ -91,54 +90,54 @@ export default {
         }
       })
     },
-    async getCommunities (addToCurrent = false) {
+    async getCommunities (addToCurrent = false, pageNumber) {
       var payload = {}
 
       if (this.communities.search) {
         payload['search'] = this.communities.search
       }
 
-      if (this.communities.pageNumber) {
-        payload['page'] = this.communities.pageNumber
+      if (pageNumber) {
+        payload['page'] = pageNumber
       }
 
       await axios.post('/communities/', payload).then(res => {
         if (!addToCurrent) {
           this.communities.list = res.data.data
         } else {
-          this.communities.list.concat(res.data.data)
+          this.communities.list = this.communities.list.concat(res.data.data)
         }
       })
     },
-    async getMatches (addToCurrent = false) {
+    async getMatches (addToCurrent = false, pageNumber) {
       var payload = {}
 
       if (this.matches.search) {
         payload['search'] = this.matches.search
       }
 
-      if (this.matches.pageNumber) {
-        payload['page'] = this.matches.pageNumber
+      if (pageNumber) {
+        payload['page'] = pageNumber
       }
 
       await axios.post('/communities/matches/', payload).then(res => {
         if (!addToCurrent) {
           this.matches.list = res.data.data
         } else {
-          this.matches.list.concat(res.data.data)
+          this.matches.list = this.matches.list.concat(res.data.data)
         }
       })
     },
-    async loadMoreMatches () {
+    async loadMoreMatches (pageNumber) {
       var oldMatchLen = this.matches.list.length
-      await this.getMatches(true)
+      await this.getMatches(true, pageNumber)
       if (oldMatchLen === this.matches.list.length || this.matches.list.length - oldMatchLen < this.matches.newPerPage) {
         this.matches.hideLoadMore = true
       }
     },
-    async loadMoreCommunities () {
+    async loadMoreCommunities (pageNumber) {
       var oldCommunitiesLen = this.communities.list.length
-      await this.getCommunities(true)
+      await this.getCommunities(true, pageNumber)
       if (oldCommunitiesLen === this.communities.list.length || this.communities.list.length - oldCommunitiesLen < this.communities.newPerPage) {
         this.communities.hideLoadMore = true
       }

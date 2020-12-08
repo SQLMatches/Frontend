@@ -5,7 +5,7 @@
               <div class="card-body">
                   <search-bar v-on:input="getMatches()" v-model="matches.search" :debounce="500"></search-bar>
                   <games :matches="matches.list"></games>
-                  <load-more v-if="!matches.hideLoadMore" v-model="matches.pageNumber" v-on:click="loadMoreMatches"></load-more>
+                  <load-more v-if="!matches.hideLoadMore" v-on:click="loadMoreMatches"></load-more>
               </div>
           </div>
       </div>
@@ -41,22 +41,22 @@ export default {
     await this.getMatches()
   },
   methods: {
-    async getMatches (addToCurrent = false) {
+    async getMatches (addToCurrent = false, pageNumber) {
       var payload = {}
 
       if (this.matches.search) {
         payload['search'] = this.matches.search
       }
 
-      if (this.matches.pageNumber) {
-        payload['page'] = this.matches.pageNumber
+      if (pageNumber) {
+        payload['page'] = pageNumber
       }
 
       await axios.post(`/matches/?community_name=${this.$route.params.communityName}`, payload).then(res => {
         if (!addToCurrent) {
           this.matches.list = res.data.data
         } else {
-          this.matches.list.concat(res.data.data)
+          this.matches.list = this.matches.list.concat(res.data.data)
         }
 
         if (this.matches.newPerPage > this.matches.list.length) {
@@ -64,9 +64,9 @@ export default {
         }
       })
     },
-    async loadMoreMatches () {
+    async loadMoreMatches (pageNumber) {
       var oldMatchLen = this.matches.list.length
-      await this.getMatches(true)
+      await this.getMatches(true, pageNumber)
       if (oldMatchLen === this.matches.list.length || this.matches.list.length - oldMatchLen < this.matches.newPerPage) {
         this.matches.hideLoadMore = true
       }
