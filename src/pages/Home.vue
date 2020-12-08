@@ -68,7 +68,7 @@ export default {
         list: [],
         search: null,
         hideLoadMore: false,
-        newPerPage: 5
+        newPerPage: 3
       }
     }
   },
