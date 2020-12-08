@@ -80,7 +80,8 @@
               </div>
             </b-tab>
             <b-tab title="Matches" v-on:click="getMatches()">
-              <games :matches="matches"></games>
+              <games :matches="matches.list"></games>
+              <load-more v-if="!matches.hideLoadMore" v-on:click="loadMoreMatches"></load-more>
             </b-tab>
           </b-tabs>
         </div>
@@ -91,15 +92,26 @@
 import axios from 'axios'
 
 import Games from '../components/Games.vue'
+import SearchBar from '../components/SearchBar.vue'
+import LoadMore from '../components/LoadMore.vue'
 
 export default {
   name: 'Profile',
+  components: {
+    Games,
+    SearchBar,
+    LoadMore
+  },
   data () {
     return {
       profilePfp: '',
       vacBans: 0,
       profile: {},
-      matches: []
+      matches: {
+        list: [],
+        newPerPage: 5,
+        hideLoadMore: false
+      }
     }
   },
   async created () {
@@ -115,15 +127,25 @@ export default {
       this.vacBans = steamXml.getElementsByTagName('vacBanned')[0].childNodes[0].nodeValue
     })
   },
-  components: {
-    Games
-  },
   methods: {
-    async getMatches () {
-      if (this.matches.length === 0) {
-        await axios.post(`/matches/?community_name=${this.$route.params.communityName}`, {search: this.$route.params.steamID}).then(res => {
-          this.matches = res.data.data
-        })
+    async getMatches (addToCurrent = false, pageNumber = 0) {
+      await axios.post(`/matches/?community_name=${this.$route.params.communityName}`, {search: this.$route.params.steamID, page: pageNumber}).then(res => {
+        if (!addToCurrent) {
+          this.matches.list = res.data.data
+        } else {
+          this.matches.list = this.matches.concat(res.data.data)
+        }
+
+        if (this.matches.newPerPage > this.matches.list.length) {
+          this.matches.hideLoadMore = true
+        }
+      })
+    },
+    async loadMoreMatches (pageNumber) {
+      var oldMatchLen = this.matches.list.length
+      await this.getMatches(true, pageNumber)
+      if (oldMatchLen === this.matches.list.length || this.matches.list.length - oldMatchLen < this.matches.newPerPage) {
+        this.matches.hideLoadMore = true
       }
     }
   }

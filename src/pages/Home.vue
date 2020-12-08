@@ -4,11 +4,7 @@
         <div class="col-md-12">
             <div class="card bg-dark content-div">
                 <div class="card-body">
-                    <h3 class="text-light card-title">How it works</h3>
-
-                    <video autoplay loop style="width: 100%">
-                      <source src="@/assets/videos/CreateCommunity.mp4" type="video/mp4">
-                    </video>
+                    <h3 class="text-light card-title">SQLMatches 0.1.0</h3>
                 </div>
             </div>
         </div>
