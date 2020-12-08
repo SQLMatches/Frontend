@@ -9,7 +9,6 @@
 import _ from 'lodash'
 
 export default {
-  name: 'SearchBar',
   props: {
     'debounce': {
       default: 500,

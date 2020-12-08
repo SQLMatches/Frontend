@@ -62,14 +62,14 @@ export default {
         list: [],
         search: null,
         hideLoadMore: false,
-        newPerPage: 5
+        newPerPage: 10
       },
       matches: {
         list: [],
         pageNumber: null,
         search: null,
         hideLoadMore: false,
-        newPerPage: 5
+        newPerPage: 10
       }
     }
   },

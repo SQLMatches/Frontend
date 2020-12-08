@@ -4,7 +4,6 @@
 
 <script>
 export default {
-  name: 'LoadMore',
   props: {
     'pageNumber': {
       default: 0,

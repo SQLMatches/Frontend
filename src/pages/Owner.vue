@@ -38,6 +38,8 @@
             <b-button variant="warning" block v-on:click="regenerateMaster()">Regenerate master key</b-button>
           </div>
           <div v-else-if="tabNumber === 1">
+            <search-bar v-model="matchSearch" v-on:input="getMatches"></search-bar>
+
             <div v-if="matches.length > 0">
               <ul class="list-unstyled matches">
                   <li v-for="(match, index) in matches" :key="index" v-on:click="addMatchToDelete(match.match_id)">
@@ -59,11 +61,11 @@
                       </div>
                   </li>
               </ul>
-
-              <b-button variant="danger" v-if="matchesToDelete.length > 0" block v-on:click="deleteMatches()">Delete selected match<span v-if="matchesToDelete.length > 1">es</span></b-button>
-              <b-button variant="danger" v-else block disabled>Delete selected match</b-button>
             </div>
-            <h3 v-else class="text-center text-light">No matches</h3>
+            <h3 v-else class="text-center text-light" style="margin-bottom: 25px">No matches</h3>
+
+            <b-button variant="danger" v-if="matchesToDelete.length > 0" block v-on:click="deleteMatches()">Delete selected match<span v-if="matchesToDelete.length > 1">es</span></b-button>
+            <b-button variant="danger" v-else block disabled>Delete selected match</b-button>
           </div>
         </div>
     </div>
@@ -73,15 +75,23 @@
 <script>
 import axios from 'axios'
 
+import SearchBar from '../components/SearchBar.vue'
+import LoadMore from '../components/LoadMore.vue'
+
 export default {
   name: 'Owner',
+  components: {
+    SearchBar,
+    LoadMore
+  },
   data () {
     return {
       masterApiKey: null,
       communityStats: {},
       tabNumber: 0,
       matches: [],
-      matchesToDelete: []
+      matchesToDelete: [],
+      matchSearch: null
     }
   },
   async created () {
@@ -112,7 +122,13 @@ export default {
       })
     },
     async getMatches () {
-      await axios.post(`/matches/?community_name=${this.$route.params.communityName}`, {require_scoreboard: false}).then(res => {
+      var payload = {require_scoreboard: false}
+
+      if (this.matchSearch) {
+        payload['search'] = this.matchSearch
+      }
+
+      await axios.post(`/matches/?community_name=${this.$route.params.communityName}`, payload).then(res => {
         this.matches = res.data.data
       })
     },

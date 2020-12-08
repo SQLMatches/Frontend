@@ -33,7 +33,7 @@ export default {
         pageNumber: null,
         search: null,
         hideLoadMore: false,
-        newPerPage: 5
+        newPerPage: 10
       }
     }
   },
