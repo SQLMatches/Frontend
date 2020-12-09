@@ -15,11 +15,7 @@ export default {
     }
   },
   created () {
-    if ('communityName' in this.$route.params) {
-      this.matches.wsConnection = new WebSocket(`${settings.wsURI}/matches/?community_name=${this.$route.params.communityName}`)
-    } else {
-      this.matches.wsConnection = new WebSocket(`${settings.wsURI}/communities/matches/`)
-    }
+    this.matches.wsConnection = new WebSocket(`${settings.wsURI}/communities/matches/`)
 
     this.matches.wsConnection.onmessage = (event) => {
       if (!this.matches.search) {
@@ -27,13 +23,16 @@ export default {
         var currentMatches = this.matches.list.map(m => m.match_id)
 
         for (let index = 0; index < newMatches.length; index++) {
-          if (!currentMatches.includes(newMatches[index].match_id)) {
-            this.matches.list = newMatches[index].concat(this.matches.list)
-          } else {
-            for (let innerIndex = 0; innerIndex < this.matches.list.length; innerIndex++) {
-              if (this.matches.list[innerIndex].match_id === newMatches[index].match_id) {
-                this.$set(this.matches.list, innerIndex, newMatches[index])
-                break
+          if (!('communityName' in this.$route.params) ||
+              newMatches[index].community_name === this.$route.params.communityName) {
+            if (!currentMatches.includes(newMatches[index].match_id)) {
+              this.matches.list = newMatches[index].concat(this.matches.list)
+            } else {
+              for (let innerIndex = 0; innerIndex < this.matches.list.length; innerIndex++) {
+                if (this.matches.list[innerIndex].match_id === newMatches[index].match_id) {
+                  this.$set(this.matches.list, innerIndex, newMatches[index])
+                  break
+                }
               }
             }
           }
