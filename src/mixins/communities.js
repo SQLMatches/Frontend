@@ -1,5 +1,7 @@
 import axios from 'axios'
 
+import settings from '../settings.js'
+
 export default {
   data () {
     return {
@@ -7,9 +9,29 @@ export default {
         list: [],
         search: null,
         hideLoadMore: false,
-        newPerPage: 10
+        newPerPage: 10,
+        wsConnection: null
       }
     }
+  },
+  created () {
+    this.communities.wsConnection = new WebSocket(`${settings.wsURI}/communities/`)
+    this.communities.wsConnection.onmessage = (event) => {
+      if (!this.communities.search) {
+        var newCommunities = JSON.parse(event.data).data
+        var currentCommunities = this.communities.list.map(c => c.community_name)
+
+        for (let index = 0; index < newCommunities.length; index++) {
+          if (!currentCommunities.includes(newCommunities[index].community_name)) {
+            this.communities.list = this.communities.list.concat(newCommunities[index])
+          }
+        }
+      }
+    }
+  },
+  beforeRouteLeave (to, from, next) {
+    this.communities.wsConnection.close()
+    next()
   },
   methods: {
     async getCommunities (addToCurrent = false, pageNumber) {
