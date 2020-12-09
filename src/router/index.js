@@ -18,10 +18,7 @@ export default new Router({
     {
       path: '/',
       name: 'Home',
-      component: Home,
-      beforeLeave (to, from, next) {
-        console.log(from)
-      }
+      component: Home
     },
     {
       path: '/c/:communityName',
