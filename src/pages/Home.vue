@@ -42,31 +42,22 @@ import Games from '../components/Games.vue'
 import SearchBar from '../components/SearchBar.vue'
 import LoadMore from '../components/LoadMore.vue'
 
+import matches from '../mixins/matches.js'
+import communities from '../mixins/communities.js'
+
 import axios from 'axios'
 
 export default {
   name: 'Home',
+  mixins: [
+    matches,
+    communities
+  ],
   components: {
     Communities,
     Games,
     SearchBar,
     LoadMore
-  },
-  data () {
-    return {
-      communities: {
-        list: [],
-        search: null,
-        hideLoadMore: false,
-        newPerPage: 10
-      },
-      matches: {
-        list: [],
-        search: null,
-        hideLoadMore: false,
-        newPerPage: 3
-      }
-    }
   },
   async created () {
     await this.getHomeContents()
@@ -85,58 +76,6 @@ export default {
           this.communities.hideLoadMore = true
         }
       })
-    },
-    async getCommunities (addToCurrent = false, pageNumber) {
-      var payload = {}
-
-      if (this.communities.search) {
-        payload['search'] = this.communities.search
-      }
-
-      if (pageNumber) {
-        payload['page'] = pageNumber
-      }
-
-      await axios.post('/communities/', payload).then(res => {
-        if (!addToCurrent) {
-          this.communities.list = res.data.data
-        } else {
-          this.communities.list = this.communities.list.concat(res.data.data)
-        }
-      })
-    },
-    async getMatches (addToCurrent = false, pageNumber) {
-      var payload = {}
-
-      if (this.matches.search) {
-        payload['search'] = this.matches.search
-      }
-
-      if (pageNumber) {
-        payload['page'] = pageNumber
-      }
-
-      await axios.post('/communities/matches/', payload).then(res => {
-        if (!addToCurrent) {
-          this.matches.list = res.data.data
-        } else {
-          this.matches.list = this.matches.list.concat(res.data.data)
-        }
-      })
-    },
-    async loadMoreMatches (pageNumber) {
-      var oldMatchLen = this.matches.list.length
-      await this.getMatches(true, pageNumber)
-      if (oldMatchLen === this.matches.list.length || this.matches.list.length - oldMatchLen < this.matches.newPerPage) {
-        this.matches.hideLoadMore = true
-      }
-    },
-    async loadMoreCommunities (pageNumber) {
-      var oldCommunitiesLen = this.communities.list.length
-      await this.getCommunities(true, pageNumber)
-      if (oldCommunitiesLen === this.communities.list.length || this.communities.list.length - oldCommunitiesLen < this.communities.newPerPage) {
-        this.communities.hideLoadMore = true
-      }
     }
   }
 }

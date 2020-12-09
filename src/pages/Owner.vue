@@ -38,11 +38,11 @@
             <b-button variant="warning" block v-on:click="regenerateMaster()">Regenerate master key</b-button>
           </div>
           <div v-else-if="tabNumber === 1">
-            <search-bar v-model="matchSearch" v-on:input="getMatches"></search-bar>
+            <search-bar v-model="matches.search" v-on:input="getMatches"></search-bar>
 
-            <div v-if="matches.length > 0">
+            <div v-if="matches.list.length > 0">
               <ul class="list-unstyled matches">
-                  <li v-for="(match, index) in matches" :key="index" v-on:click="addMatchToDelete(match.match_id)">
+                  <li v-for="(match, index) in matches.list" :key="index" v-on:click="addMatchToDelete(match.match_id)">
                       <div class="card match" v-bind:class="{'selected-to-delete': matchesToDelete.includes(match.match_id)}" v-b-tooltip.hover :title="`${match.timestamp} - ${match.map}`">
                         <img class="card-img w-100 d-block" :src="match.cover_image">
                           <div class="card-img-overlay d-flex d-xl-flex flex-column flex-grow-0 flex-shrink-0 justify-content-center align-items-center justify-content-xl-center align-items-xl-center">
@@ -86,8 +86,13 @@ import axios from 'axios'
 import SearchBar from '../components/SearchBar.vue'
 import LoadMore from '../components/LoadMore.vue'
 
+import matches from '../mixins/matches.js'
+
 export default {
   name: 'Owner',
+  mixins: [
+    matches
+  ],
   components: {
     SearchBar,
     LoadMore
@@ -97,9 +102,7 @@ export default {
       masterApiKey: null,
       communityStats: {},
       tabNumber: 0,
-      matches: [],
       matchesToDelete: [],
-      matchSearch: null,
       communityNameDisable: null,
       validCommunityName: null
     }
@@ -118,6 +121,9 @@ export default {
         this.matchesToDelete.push(matchID)
       }
     },
+    validateCommunityName () {
+      this.validCommunityName = this.communityNameDisable === this.$route.params.communityName
+    },
     async getCommunity () {
       await axios.get(`/community/owner/?community_name=${this.$route.params.communityName}&check_ownership=true`).then(res => {
         this.masterApiKey = res.data.data.community.master_api_key
@@ -129,17 +135,6 @@ export default {
     async regenerateMaster () {
       await axios.post(`/community/owner/?community_name=${this.$route.params.communityName}&check_ownership=true`).then(res => {
         this.masterApiKey = res.data.data.master_api_key
-      })
-    },
-    async getMatches () {
-      var payload = {require_scoreboard: false}
-
-      if (this.matchSearch) {
-        payload['search'] = this.matchSearch
-      }
-
-      await axios.post(`/matches/?community_name=${this.$route.params.communityName}`, payload).then(res => {
-        this.matches = res.data.data
       })
     },
     async deleteMatches () {
@@ -156,9 +151,6 @@ export default {
           window.location.href = '/'
         })
       }
-    },
-    validateCommunityName () {
-      this.validCommunityName = this.communityNameDisable === this.$route.params.communityName
     }
   }
 }

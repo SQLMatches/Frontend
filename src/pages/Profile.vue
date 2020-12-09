@@ -95,8 +95,13 @@ import Games from '../components/Games.vue'
 import SearchBar from '../components/SearchBar.vue'
 import LoadMore from '../components/LoadMore.vue'
 
+import matches from '../mixins/matches.js'
+
 export default {
   name: 'Profile',
+  mixins: [
+    matches
+  ],
   components: {
     Games,
     SearchBar,
@@ -106,15 +111,12 @@ export default {
     return {
       profilePfp: '',
       vacBans: 0,
-      profile: {},
-      matches: {
-        list: [],
-        newPerPage: 5,
-        hideLoadMore: false
-      }
+      profile: {}
     }
   },
   async created () {
+    this.matches.search = this.$route.params.steamID
+
     await axios.get(`/profile/${this.$route.params.steamID}/?community_name=${this.$route.params.communityName}`).then(res => {
       this.profile = res.data.data
     }).catch(_ => {
@@ -126,28 +128,6 @@ export default {
       this.profilePfp = steamXml.getElementsByTagName('avatarFull')[0].childNodes[0].nodeValue
       this.vacBans = steamXml.getElementsByTagName('vacBanned')[0].childNodes[0].nodeValue
     })
-  },
-  methods: {
-    async getMatches (addToCurrent = false, pageNumber = 0) {
-      await axios.post(`/matches/?community_name=${this.$route.params.communityName}`, {search: this.$route.params.steamID, page: pageNumber}).then(res => {
-        if (!addToCurrent) {
-          this.matches.list = res.data.data
-        } else {
-          this.matches.list = this.matches.concat(res.data.data)
-        }
-
-        if (this.matches.newPerPage > this.matches.list.length) {
-          this.matches.hideLoadMore = true
-        }
-      })
-    },
-    async loadMoreMatches (pageNumber) {
-      var oldMatchLen = this.matches.list.length
-      await this.getMatches(true, pageNumber)
-      if (oldMatchLen === this.matches.list.length || this.matches.list.length - oldMatchLen < this.matches.newPerPage) {
-        this.matches.hideLoadMore = true
-      }
-    }
   }
 }
 </script>

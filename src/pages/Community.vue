@@ -17,60 +17,20 @@ import Games from '../components/Games.vue'
 import SearchBar from '../components/SearchBar.vue'
 import LoadMore from '../components/LoadMore.vue'
 
-import axios from 'axios'
+import matches from '../mixins/matches.js'
 
 export default {
   name: 'Community',
+  mixins: [
+    matches
+  ],
   components: {
     Games,
     SearchBar,
     LoadMore
   },
-  data () {
-    return {
-      matches: {
-        list: [],
-        pageNumber: null,
-        search: null,
-        hideLoadMore: false,
-        newPerPage: 10
-      }
-    }
-  },
   async created () {
     await this.getMatches()
-  },
-  methods: {
-    async getMatches (addToCurrent = false, pageNumber) {
-      var payload = {}
-
-      if (this.matches.search) {
-        payload['search'] = this.matches.search
-      }
-
-      if (pageNumber) {
-        payload['page'] = pageNumber
-      }
-
-      await axios.post(`/matches/?community_name=${this.$route.params.communityName}`, payload).then(res => {
-        if (!addToCurrent) {
-          this.matches.list = res.data.data
-        } else {
-          this.matches.list = this.matches.list.concat(res.data.data)
-        }
-
-        if (this.matches.newPerPage > this.matches.list.length) {
-          this.matches.hideLoadMore = true
-        }
-      })
-    },
-    async loadMoreMatches (pageNumber) {
-      var oldMatchLen = this.matches.list.length
-      await this.getMatches(true, pageNumber)
-      if (oldMatchLen === this.matches.list.length || this.matches.list.length - oldMatchLen < this.matches.newPerPage) {
-        this.matches.hideLoadMore = true
-      }
-    }
   }
 }
 </script>
