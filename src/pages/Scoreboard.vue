@@ -43,6 +43,8 @@ import axios from 'axios'
 
 import Scorecard from '../components/Scorecard.vue'
 
+import settings from '../settings.js'
+
 export default {
   name: 'Scoreboard',
   components: {
@@ -50,8 +52,21 @@ export default {
   },
   data () {
     return {
-      scoreboard: {}
+      scoreboard: {},
+      wsConnection: null
     }
+  },
+  async created () {
+    await this.getScoreboard(this.$route.params.matchID, this.$route.params.communityName)
+
+    this.wsConnection = new WebSocket(`${settings.wsURI}/scoreboard/${this.$route.params.matchID}`)
+    this.wsConnection.onmessage = (event) => {
+      this.scoreboard = JSON.parse(event.data).data
+    }
+  },
+  beforeRouteLeave (to, from, next) {
+    this.wsConnection.close()
+    next()
   },
   methods: {
     async getScoreboard (matchID, communityName) {
@@ -61,9 +76,6 @@ export default {
         this.$router.push({name: 'PageNotFound'})
       })
     }
-  },
-  async created () {
-    await this.getScoreboard(this.$route.params.matchID, this.$route.params.communityName)
   }
 }
 </script>
