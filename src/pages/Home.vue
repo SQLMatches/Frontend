@@ -68,11 +68,11 @@ export default {
         this.communities.list = res.data.data.communities
         this.matches.list = res.data.data.matches
 
-        if (this.matches.newPerPage > this.matches.list.length) {
+        if (this.matches.list.length < 3 || this.matches.list.length === 0) {
           this.matches.hideLoadMore = true
         }
 
-        if (this.communities.newPerPage > this.communities.list.length) {
+        if (this.communities.list.length < 10 || this.communities.list.length === 0) {
           this.communities.hideLoadMore = true
         }
       })
