@@ -116,6 +116,7 @@ export default {
   },
   async created () {
     this.matches.search = this.$route.params.steamID
+    this.matches.wsEnabled = false
 
     await axios.get(`/profile/${this.$route.params.steamID}/?community_name=${this.$route.params.communityName}`).then(res => {
       this.profile = res.data.data

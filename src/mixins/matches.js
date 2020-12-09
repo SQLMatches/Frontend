@@ -10,11 +10,16 @@ export default {
         search: null,
         hideLoadMore: false,
         newPerPage: null,
-        wsConnection: null
+        wsConnection: null,
+        wsEnabled: true
       }
     }
   },
-  created () {
+  mounted () {
+    if (!this.matches.wsEnabled) {
+      return
+    }
+
     this.matches.wsConnection = new WebSocket(`${settings.wsURI}/communities/matches/`)
 
     this.matches.wsConnection.onmessage = (event) => {
@@ -41,6 +46,11 @@ export default {
     }
   },
   beforeRouteLeave (to, from, next) {
+    if (!this.matches.wsEnabled) {
+      next()
+      return
+    }
+
     this.matches.wsConnection.close()
     next()
   },
