@@ -6,7 +6,7 @@
 export default {
   props: {
     'pageNumber': {
-      default: 0,
+      default: 1,
       type: Number
     }
   },

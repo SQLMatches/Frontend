@@ -16,31 +16,26 @@ export default {
     }
   },
   mounted () {
-    if (!this.communities.wsEnabled) {
-      return
-    }
+    if (this.communities.wsEnabled) {
+      this.communities.wsConnection = new WebSocket(`${settings.wsURI}/communities/`)
+      this.communities.wsConnection.onmessage = (event) => {
+        if (!this.communities.search) {
+          var newCommunities = JSON.parse(event.data).data
+          var currentCommunities = this.communities.list.map(c => c.community_name)
 
-    this.communities.wsConnection = new WebSocket(`${settings.wsURI}/communities/`)
-    this.communities.wsConnection.onmessage = (event) => {
-      if (!this.communities.search) {
-        var newCommunities = JSON.parse(event.data).data
-        var currentCommunities = this.communities.list.map(c => c.community_name)
-
-        for (let index = 0; index < newCommunities.length; index++) {
-          if (!currentCommunities.includes(newCommunities[index].community_name)) {
-            this.communities.list = newCommunities[index].concat(this.communities.list)
+          for (let index = 0; index < newCommunities.length; index++) {
+            if (!currentCommunities.includes(newCommunities[index].community_name)) {
+              this.communities.list = newCommunities[index].concat(this.communities.list)
+            }
           }
         }
       }
     }
   },
   beforeRouteLeave (to, from, next) {
-    if (!this.communities.wsEnabled) {
-      next()
-      return
+    if (this.communities.wsEnabled) {
+      this.communities.wsConnection.close()
     }
-
-    this.communities.wsConnection.close()
     next()
   },
   methods: {
