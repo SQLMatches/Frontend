@@ -23,7 +23,7 @@ export default {
 
         for (let index = 0; index < newCommunities.length; index++) {
           if (!currentCommunities.includes(newCommunities[index].community_name)) {
-            this.communities.list = this.communities.list.concat(newCommunities[index])
+            this.communities.list = newCommunities[index].concat(this.communities.list)
           }
         }
       }
@@ -34,7 +34,7 @@ export default {
     next()
   },
   methods: {
-    async getCommunities (addToCurrent = false, pageNumber) {
+    async getCommunities (pageNumber, addToCurrent = false) {
       var payload = {}
 
       if (this.communities.search) {
@@ -49,13 +49,13 @@ export default {
         if (!addToCurrent) {
           this.communities.list = res.data.data
         } else {
-          this.communities.list = this.communities.list.concat(res.data.data)
+          this.communities.list = res.data.data.concat(this.communities.list)
         }
       })
     },
     async loadMoreCommunities (pageNumber) {
       var oldCommunitiesLen = this.communities.list.length
-      await this.getCommunities(true, pageNumber)
+      await this.getCommunities(pageNumber, true)
       if (oldCommunitiesLen === this.communities.list.length ||
           this.communities.list.length - oldCommunitiesLen < this.communities.newPerPage) {
         this.communities.hideLoadMore = true
