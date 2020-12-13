@@ -1,7 +1,5 @@
 import axios from 'axios'
 
-import settings from '../settings.js'
-
 export default {
   data () {
     return {
@@ -10,44 +8,37 @@ export default {
         search: null,
         hideLoadMore: false,
         newPerPage: null,
-        wsConnection: null,
         wsEnabled: true
       }
     }
   },
   mounted () {
     if (this.matches.wsEnabled) {
-      this.matches.wsConnection = new WebSocket(`${settings.wsURI}/communities/matches/`)
-
-      this.matches.wsConnection.onmessage = (event) => {
+      this.sockets.subscribe('match_update', (data) => {
         if (!this.matches.search) {
-          var newMatches = JSON.parse(event.data).data
           var currentMatches = this.matches.list.map(m => m.match_id)
 
-          for (let index = 0; index < newMatches.length; index++) {
-            if (!('communityName' in this.$route.params) ||
-                newMatches[index].community_name === this.$route.params.communityName) {
-              if (!currentMatches.includes(newMatches[index].match_id)) {
-                this.matches.list = newMatches[index].concat(this.matches.list)
-              } else {
-                for (let innerIndex = 0; innerIndex < this.matches.list.length; innerIndex++) {
-                  if (this.matches.list[innerIndex].match_id === newMatches[index].match_id) {
-                    this.$set(this.matches.list, innerIndex, newMatches[index])
-                    break
-                  }
+          if (!('communityName' in this.$route.params) ||
+          data.community_name === this.$route.params.communityName) {
+            if (!currentMatches.includes(data.match_id)) {
+              this.matches.list.unshift(data)
+            } else {
+              for (let index = 0; index < this.matches.list.length; index++) {
+                if (this.matches.list[index].match_id === data.match_id) {
+                  this.$set(this.matches.list, index, data)
+                  break
                 }
               }
             }
           }
         }
-      }
+      })
     }
   },
   beforeRouteLeave (to, from, next) {
     if (this.matches.wsEnabled) {
-      this.matches.wsConnection.close()
+      this.sockets.unsubscribe('match_update')
     }
-
     next()
   },
   methods: {

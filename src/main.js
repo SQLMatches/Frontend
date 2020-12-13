@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Axios from 'axios'
+import VueSocketIO from 'vue-socket.io'
 
 import { BootstrapVue, BootstrapVueIcons } from 'bootstrap-vue'
 
@@ -14,9 +15,15 @@ import settings from './settings.js'
 
 Vue.use(BootstrapVue)
 Vue.use(BootstrapVueIcons)
+Vue.use(
+  new VueSocketIO({
+    connection: settings.baseUrl,
+    options: { path: settings.wsUrl, transports: ['websocket'] }
+  })
+)
 
 Vue.prototype.$http = Axios
-Axios.defaults.baseURL = settings.apiURl
+Axios.defaults.baseURL = settings.baseUrl + settings.apiUrl
 Vue.config.productionTip = false
 
 /* eslint-disable no-new */

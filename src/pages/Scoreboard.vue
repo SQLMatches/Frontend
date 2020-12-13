@@ -43,8 +43,6 @@ import axios from 'axios'
 
 import Scorecard from '../components/Scorecard.vue'
 
-import settings from '../settings.js'
-
 export default {
   name: 'Scoreboard',
   components: {
@@ -59,13 +57,12 @@ export default {
   async created () {
     await this.getScoreboard(this.$route.params.matchID, this.$route.params.communityName)
 
-    this.wsConnection = new WebSocket(`${settings.wsURI}/scoreboard/${this.$route.params.matchID}`)
-    this.wsConnection.onmessage = (event) => {
-      this.scoreboard = JSON.parse(event.data).data
-    }
+    this.sockets.subscribe(this.$route.params.matchID, (data) => {
+      this.scoreboard = data
+    })
   },
   beforeRouteLeave (to, from, next) {
-    this.wsConnection.close()
+    this.sockets.unsubscribe(this.$route.params.matchID)
     next()
   },
   methods: {
