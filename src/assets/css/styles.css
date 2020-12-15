@@ -447,3 +447,9 @@ a:hover {
 button.close {
   color: #fff!important;
 }
+
+.list-group-item {
+  background-color: #272636;
+  color: #fff;
+  margin-top: 10px;
+}

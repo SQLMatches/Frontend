@@ -28,7 +28,8 @@
                 <b-tab title="API" active v-on:click="changeTab(0)"></b-tab>
                 <b-tab title="Matches" v-on:click="changeTab(1); getMatches()"></b-tab>
                 <b-tab title="Community" v-on:click="changeTab(2)"></b-tab>
-                <b-tab title="Payments" v-on:click="changeTab(3)"></b-tab>
+                <b-tab title="Webhooks" v-on:click="changeTab(3)"></b-tab>
+                <b-tab title="Payments" v-on:click="changeTab(4)"></b-tab>
             </b-tabs>
         </div>
         <div class="card-body">
@@ -91,7 +92,7 @@
               <b-button variant="danger" v-on:click="$bvToast.show('community-disable')">Disable community</b-button>
             </div>
           </div>
-          <div v-else-if="tabNumber === 3">
+          <div v-else-if="tabNumber === 4">
             <h3>Payment logs</h3>
           </div>
         </div>
