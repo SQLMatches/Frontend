@@ -43,7 +43,10 @@
             </b-form>
 
             <h3 style="margin-top:35px;">API Access</h3>
-            <p>Give users access to pull data from your community.</p>
+            <p>Give users access to pull community data.</p>
+            <b-button v-bind:class="{'btn-success': !apiAccessDisabled, 'btn-danger': apiAccessDisabled}" v-on:click="toggleApiAccess()" class="text-light">
+              <span v-if="!apiAccessDisabled">Enable</span><span v-else>Disable</span> Access
+            </b-button>
           </div>
           <div v-else-if="tabNumber === 1">
             <search-bar v-model="matches.search" v-on:input="getMatches"></search-bar>
@@ -126,6 +129,7 @@ export default {
       matchesToDelete: [],
       communityNameDisable: null,
       validCommunityName: null,
+      apiAccessDisabled: null,
       costPerMb: settings.costs.costPerMb,
       minUpload: settings.costs.minUpload,
       maxUpload: settings.costs.maxUpload,
@@ -151,8 +155,19 @@ export default {
     validateCommunityName () {
       this.validCommunityName = this.communityNameDisable === this.$route.params.communityName
     },
+    async toggleApiAccess () {
+      if (this.apiAccessDisabled) {
+        this.apiAccessDisabled = false
+      } else {
+        this.apiAccessDisabled = true
+      }
+
+      await axios.post(`/community/owner/access/?community_name=${this.$route.params.communityName}&check_ownership=true`, {enabled: this.apiAccessDisabled})
+    },
     async getCommunity () {
       await axios.get(`/community/owner/?community_name=${this.$route.params.communityName}&check_ownership=true`).then(res => {
+        console.log(res.data.data.community)
+        this.apiAccessDisabled = res.data.data.community.allow_api_access
         this.form.max_upload = res.data.data.community.max_upload
         this.masterApiKey = res.data.data.community.master_api_key
         this.communityStats = res.data.data.stats
