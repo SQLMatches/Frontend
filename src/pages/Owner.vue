@@ -29,7 +29,7 @@
                 <b-tab title="Matches" v-on:click="changeTab(1); getMatches()"></b-tab>
                 <b-tab title="Community" v-on:click="changeTab(2)"></b-tab>
                 <b-tab title="Webhooks" v-on:click="changeTab(3)"></b-tab>
-                <b-tab title="Payments" v-on:click="changeTab(4)"></b-tab>
+                <b-tab title="Payments" v-on:click="changeTab(4); getPayments()"></b-tab>
             </b-tabs>
         </div>
         <div class="card-body">
@@ -96,7 +96,21 @@
             </div>
           </div>
           <div v-else-if="tabNumber === 4">
-            <h3>Payment logs</h3>
+            <div v-if="paymentRecords == null" class="d-flex justify-content-center mb-3">
+              <b-spinner></b-spinner>
+            </div>
+            <h3 v-else-if="paymentRecords.length === 0" class="text-center">No payment logs :/</h3>
+            <div v-else>
+              <h3>Payments</h3>
+
+              <b-list-group>
+                <b-list-group-item v-for="(payment, index) in paymentRecords" :key="index">
+                  Payment ID: {{ payment.payment_id }} <br>
+                  Amount: {{ payment.amount_paid }} <br>
+                  Timestamp: {{ payment.timestamp }}
+                </b-list-group-item>
+              </b-list-group>
+            </div>
           </div>
         </div>
     </div>
@@ -130,6 +144,7 @@ export default {
       communityNameDisable: null,
       validCommunityName: null,
       apiAccessDisabled: null,
+      paymentRecords: null,
       costPerMb: settings.costs.costPerMb,
       minUpload: settings.costs.minUpload,
       maxUpload: settings.costs.maxUpload,
@@ -154,6 +169,11 @@ export default {
     },
     validateCommunityName () {
       this.validCommunityName = this.communityNameDisable === this.$route.params.communityName
+    },
+    async getPayments () {
+      await axios.get(`/community/owner/payments/?community_name=${this.$route.params.communityName}&check_ownership=true`).then(res => {
+        this.paymentRecords = res.data.data
+      })
     },
     async toggleApiAccess () {
       if (this.apiAccessDisabled) {
