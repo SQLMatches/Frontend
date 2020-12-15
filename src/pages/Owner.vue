@@ -33,11 +33,16 @@
         </div>
         <div class="card-body">
           <div v-if="tabNumber === 0">
+            <h3>Master API Key</h3>
+            <p>Warning, never share this key with anyone!</p>
             <b-form inline>
               <b-form-input :value="masterApiKey" disabled class="mb-2 mr-sm-2 mb-sm-0 key-hidden" style="width:35%;"></b-form-input>
               <b-button variant="primary" class="mb-2 mr-sm-2 mb-sm-0" v-on:click="copyMasterKey()"><b-icon icon="clipboard" variant="light"></b-icon></b-button>
               <b-button variant="warning" v-on:click="regenerateMaster()" class="mb-2 mr-sm-2 mb-sm-0"><b-icon icon="exclamation-octagon" variant="light"></b-icon> Regenerate</b-button>
             </b-form>
+
+            <h3 style="margin-top:35px;">API Access</h3>
+            <p>Give users access to pull data from your community.</p>
           </div>
           <div v-else-if="tabNumber === 1">
             <search-bar v-model="matches.search" v-on:input="getMatches"></search-bar>
@@ -64,7 +69,7 @@
                   </li>
               </ul>
             </div>
-            <h3 v-else class="text-center text-light" style="margin-bottom: 25px">No matches</h3>
+            <h3 v-else class="text-center text-light" style="margin-bottom: 25px">No matches found</h3>
 
             <b-button variant="danger" v-if="matchesToDelete.length > 0" block v-on:click="deleteMatches()">Delete selected match<span v-if="matchesToDelete.length > 1">es</span></b-button>
             <b-button variant="danger" v-else block disabled>Delete selected match</b-button>
