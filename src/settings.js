@@ -1,5 +1,7 @@
 export default {
-  baseUrl: 'http://localhost',
+  http: 'http://',
+  ws: 'ws://',
+  baseUrl: 'localhost',
   apiUrl: '/api',
   wsUrl: '/ws/socket.io',
   costs: {

@@ -17,13 +17,13 @@ Vue.use(BootstrapVue)
 Vue.use(BootstrapVueIcons)
 Vue.use(
   new VueSocketIO({
-    connection: settings.baseUrl,
+    connection: settings.ws + settings.baseUrl,
     options: { path: settings.wsUrl, transports: ['websocket'] }
   })
 )
 
 Vue.prototype.$http = Axios
-Axios.defaults.baseURL = settings.baseUrl + settings.apiUrl
+Axios.defaults.baseURL = settings.http + settings.baseUrl + settings.apiUrl
 Vue.config.productionTip = false
 
 /* eslint-disable no-new */

@@ -166,7 +166,6 @@ export default {
     },
     async getCommunity () {
       await axios.get(`/community/owner/?community_name=${this.$route.params.communityName}&check_ownership=true`).then(res => {
-        console.log(res.data.data.community)
         this.apiAccessDisabled = res.data.data.community.allow_api_access
         this.form.max_upload = res.data.data.community.max_upload
         this.masterApiKey = res.data.data.community.master_api_key
