@@ -83,22 +83,24 @@
 <script>
 import axios from 'axios'
 
+import settings from '../settings.js'
+
 export default {
   name: 'Create',
   data () {
     return {
       communityName: null,
       stepCounter: 0,
-      costPerMb: 0.15,
-      minUpload: 50.0,
-      maxUpload: 100.0,
+      costPerMb: settings.costs.costPerMb,
+      minUpload: settings.costs.minUpload,
+      maxUpload: settings.costs.maxUpload,
       communityNameRegExp: new RegExp('^[a-zA-Z0-9]{4,32}$'),
       communityNameState: null,
       tosStatus: false,
       form: {
         community_name: '',
         community_type: null,
-        max_upload: 50.0
+        max_upload: settings.costs.minUpload
       }
     }
   },
