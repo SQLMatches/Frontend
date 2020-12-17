@@ -110,7 +110,10 @@
                 <b-form-input v-model="webhooks.roundEnd.value" v-on:input="validateWebhook()" :state="webhooks.roundEnd.state" id="round-end-webhook" autocomplete="off" :placeholder="webhooks.roundEnd.value" required></b-form-input>
               </b-form-group>
 
-              <b-button variant="primary" v-on:click="updateWebhooks()">Update Webhooks</b-button>
+              <b-button variant="primary" v-on:click="updateWebhooks()" v-if="webhooks.submitState">Update Webhooks</b-button>
+              <div v-else>
+                <b-button variant="primary" v-on:click="updateWebhooks()" disabled>Update Webhooks</b-button>
+              </div>
           </div>
           <div v-else-if="tabNumber === 4">
             <div v-if="paymentRecords == null" class="d-flex justify-content-center mb-3">
@@ -162,7 +165,7 @@ export default {
       validCommunityName: null,
       apiAccessDisabled: null,
       paymentRecords: null,
-      validateWebhookRegExp: new RegExp(/^((https?|http):\/\/)?(www.)?[a-z0-9]+(\.[a-z]{2,}){1,3}(#?\/?[a-zA-Z0-9#]+)*\/?(\?[a-zA-Z0-9-_]+=[a-zA-Z0-9-%]+&?)?$/),
+      validateWebhookRegExp: new RegExp(/^((https|http):\/\/)(www.)?[a-z0-9]+(\.[a-z]{2,}){1,3}(#?\/?[a-zA-Z0-9#]+)*\/?(\?[a-zA-Z0-9-_]+=[a-zA-Z0-9-%]+&?)?$/),
       costPerMb: settings.costs.costPerMb,
       minUpload: settings.costs.minUpload,
       maxUpload: settings.costs.maxUpload,
@@ -170,6 +173,11 @@ export default {
         max_upload: settings.costs.minUpload
       },
       webhooks: {
+        submitState: false,
+        length: {
+          min: 5,
+          max: 255
+        },
         matchEnd: {
           state: null,
           value: null
@@ -204,18 +212,57 @@ export default {
     },
     validateWebhook () {
       if (this.webhooks.matchEnd.value) {
-        this.webhooks.matchEnd.state = this.validateWebhookRegExp.test(this.webhooks.matchEnd.value)
+        this.webhooks.matchEnd.state = (
+          this.validateWebhookRegExp.test(this.webhooks.matchEnd.value) && (
+            this.webhooks.matchEnd.value.length >= this.webhooks.length.min && this.webhooks.matchEnd.value.length <= this.webhooks.length.max
+          )
+        )
       }
 
       if (this.webhooks.matchStart.value) {
-        this.webhooks.matchStart.state = this.validateWebhookRegExp.test(this.webhooks.matchStart.value)
+        this.webhooks.matchStart.state = (
+          this.validateWebhookRegExp.test(this.webhooks.matchStart.value) && (
+            this.webhooks.matchStart.value.length >= this.webhooks.length.min && this.webhooks.matchStart.value.length <= this.webhooks.length.max
+          )
+        )
       }
 
       if (this.webhooks.roundEnd.value) {
-        this.webhooks.roundEnd.state = this.validateWebhookRegExp.test(this.webhooks.roundEnd.value)
+        this.webhooks.roundEnd.state = (
+          this.validateWebhookRegExp.test(this.webhooks.roundEnd.value) && (
+            this.webhooks.roundEnd.value.length >= this.webhooks.length.min && this.webhooks.roundEnd.value.length <= this.webhooks.length.max
+          )
+        )
+      }
+
+      if (this.webhooks.matchEnd.state !== false && this.webhooks.matchStart.state !== false && this.webhooks.roundEnd.state !== false) {
+        this.webhooks.submitState = true
+      } else {
+        this.webhooks.submitState = false
       }
     },
-    async updateWebhooks () {},
+    async updateWebhooks () {
+      var payload = {}
+
+      if (this.webhooks.matchEnd.value) {
+        payload['match_end_webhook'] = this.webhooks.matchEnd.value
+      }
+
+      if (this.webhooks.matchStart.value) {
+        payload['match_start_webhook'] = this.webhooks.matchStart.value
+      }
+
+      if (this.webhooks.roundEnd.value) {
+        payload['round_end_webhook'] = this.webhooks.roundEnd.value
+      }
+
+      await axios.post(`/community/owner/update/?community_name=${this.$route.params.communityName}&check_ownership=true`, payload).then(res => {
+        this.webhooks.submitState = false
+        this.webhooks.matchEnd.state = null
+        this.webhooks.matchStart.state = null
+        this.webhooks.roundEnd.state = null
+      })
+    },
     async getPayments () {
       await axios.get(`/community/owner/payments/?community_name=${this.$route.params.communityName}&check_ownership=true`).then(res => {
         this.paymentRecords = res.data.data

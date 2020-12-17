@@ -32,8 +32,15 @@ nav .navbar-nav li a{
   background: #ea4d9e -webkit-gradient(linear, left top, left bottom, from(#ea4d9e), to(#ea4d9e)) repeat-x;
   background: #ea4d9e linear-gradient(180deg, #ea4d9e, #ea4d9e) repeat-x;
   border-color: #ea4d9e;
-  -webkit-box-shadow: 0 0 0 0.2rem rgba(66,166,245,0.5);
-  box-shadow: 0 0 0 0.2rem rgba(66,166,245,0.5);
+  -webkit-box-shadow: 0 0 0 0.2rem rgba(245, 66, 230, 0.5);
+  box-shadow: 0 0 0 0.2rem rgba(245, 66, 230, 0.5);
+}
+
+.btn-primary.disabled, .btn-primary:disabled {
+  color: #fff;
+  background: #973a6b -webkit-gradient(linear, left top, left bottom, from(#973a6b), to(#973a6b)) repeat-x;
+  background: #973a6b linear-gradient(180deg, #973a6b, #973a6b) repeat-x;
+  border-color: #973a6b;
 }
 
 .btn-primary:focus {
