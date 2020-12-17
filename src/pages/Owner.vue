@@ -182,7 +182,7 @@ export default {
         this.apiAccessDisabled = true
       }
 
-      await axios.post(`/community/owner/access/?community_name=${this.$route.params.communityName}&check_ownership=true`, {enabled: this.apiAccessDisabled})
+      await axios.post(`/community/owner/update/?community_name=${this.$route.params.communityName}&check_ownership=true`, {allow_api_access: this.apiAccessDisabled})
     },
     async getCommunity () {
       await axios.get(`/community/owner/?community_name=${this.$route.params.communityName}&check_ownership=true`).then(res => {
