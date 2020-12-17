@@ -116,11 +116,7 @@ export default {
       }
     },
     validateCommmunityName () {
-      if (this.communityNameRegExp.test(this.form.community_name)) {
-        this.communityNameState = true
-      } else {
-        this.communityNameState = false
-      }
+      this.communityNameState = this.communityNameRegExp.test(this.form.community_name)
     },
     async createCommunity () {
       await axios.post('/community/', this.form).then(res => {

@@ -385,8 +385,8 @@ a:hover {
 }
 
 .create-community label {
-  font-size: 1.4em;
-  padding: 0;
+  font-size: 1.4em !important;
+  padding: 0 !important;
 }
 
 .create-community input[type=text]:focus {   
@@ -395,6 +395,10 @@ a:hover {
 
 .create-community input {
   color: #fff !important;
+}
+
+.create-community label {
+  margin-bottom: 0 !important;
 }
 
 .custom-range::-webkit-slider-thumb {

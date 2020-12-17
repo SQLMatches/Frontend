@@ -95,6 +95,23 @@
               <b-button variant="danger" v-on:click="$bvToast.show('community-disable')">Disable community</b-button>
             </div>
           </div>
+          <div v-else-if="tabNumber === 3" class="create-community">
+            <p style="margin-bottom: 25px;">Get data pushed to endpoints on match events.</p>
+
+              <b-form-group label="Match End Event" label-for="match-end-webhook">
+                <b-form-input v-model="webhooks.matchEnd.value" v-on:input="validateWebhook()" :state="webhooks.matchEnd.state" id="match-end-webhook" autocomplete="off" :placeholder="webhooks.matchEnd.value" required></b-form-input>
+              </b-form-group>
+
+              <b-form-group label="Match Start Event" label-for="match-start-webhook">
+                <b-form-input v-model="webhooks.matchStart.value" v-on:input="validateWebhook()" :state="webhooks.matchStart.state" id="match-start-webhook" autocomplete="off" :placeholder="webhooks.matchStart.value" required></b-form-input>
+              </b-form-group>
+
+              <b-form-group label="Round End Event" label-for="round-end-webhook">
+                <b-form-input v-model="webhooks.roundEnd.value" v-on:input="validateWebhook()" :state="webhooks.roundEnd.state" id="round-end-webhook" autocomplete="off" :placeholder="webhooks.roundEnd.value" required></b-form-input>
+              </b-form-group>
+
+              <b-button variant="primary" v-on:click="updateWebhooks()">Update Webhooks</b-button>
+          </div>
           <div v-else-if="tabNumber === 4">
             <div v-if="paymentRecords == null" class="d-flex justify-content-center mb-3">
               <b-spinner></b-spinner>
@@ -145,11 +162,26 @@ export default {
       validCommunityName: null,
       apiAccessDisabled: null,
       paymentRecords: null,
+      validateWebhookRegExp: new RegExp(/^((https?|http):\/\/)?(www.)?[a-z0-9]+(\.[a-z]{2,}){1,3}(#?\/?[a-zA-Z0-9#]+)*\/?(\?[a-zA-Z0-9-_]+=[a-zA-Z0-9-%]+&?)?$/),
       costPerMb: settings.costs.costPerMb,
       minUpload: settings.costs.minUpload,
       maxUpload: settings.costs.maxUpload,
       form: {
         max_upload: settings.costs.minUpload
+      },
+      webhooks: {
+        matchEnd: {
+          state: null,
+          value: null
+        },
+        matchStart: {
+          state: null,
+          value: null
+        },
+        roundEnd: {
+          state: null,
+          value: null
+        }
       }
     }
   },
@@ -170,6 +202,20 @@ export default {
     validateCommunityName () {
       this.validCommunityName = this.communityNameDisable === this.$route.params.communityName
     },
+    validateWebhook () {
+      if (this.webhooks.matchEnd.value) {
+        this.webhooks.matchEnd.state = this.validateWebhookRegExp.test(this.webhooks.matchEnd.value)
+      }
+
+      if (this.webhooks.matchStart.value) {
+        this.webhooks.matchStart.state = this.validateWebhookRegExp.test(this.webhooks.matchStart.value)
+      }
+
+      if (this.webhooks.roundEnd.value) {
+        this.webhooks.roundEnd.state = this.validateWebhookRegExp.test(this.webhooks.roundEnd.value)
+      }
+    },
+    async updateWebhooks () {},
     async getPayments () {
       await axios.get(`/community/owner/payments/?community_name=${this.$route.params.communityName}&check_ownership=true`).then(res => {
         this.paymentRecords = res.data.data
@@ -186,6 +232,10 @@ export default {
     },
     async getCommunity () {
       await axios.get(`/community/owner/?community_name=${this.$route.params.communityName}&check_ownership=true`).then(res => {
+        this.webhooks.matchEnd.value = res.data.data.community.match_end_webhook
+        this.webhooks.matchStart.value = res.data.data.community.match_start_webhook
+        this.webhooks.roundEnd.value = res.data.data.community.round_end_webhook
+
         this.apiAccessDisabled = res.data.data.community.allow_api_access
         this.form.max_upload = res.data.data.community.max_upload
         this.masterApiKey = res.data.data.community.master_api_key
