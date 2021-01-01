@@ -83,7 +83,63 @@
             <b-form-input type="range" name="cost" :min="minUpload" :max="maxUpload" v-model="form.max_upload"></b-form-input>
             <div>Max upload size: {{ form.max_upload }} MB</div>
             <div>Cost per month: {{ ((form.max_upload - minUpload) * costPerMb).toFixed(2) }} USD</div>
-            <p>When decreasing your max upload, the changes will take affect after the month ends.</p>
+
+            <b-button v-if="cardId" variant="info" block>Subscribe</b-button>
+            <b-button v-else variant="info" block disabled>Add a card inorder to subscribe</b-button>
+
+            <h3 style="margin-top:25px;">Card details</h3>
+            <p class="text-danger" v-if="cardErrors.stripe">Card wasn't accepted by Stripe</p>
+            <form>
+              <div class="row pt-4">
+                <div class="col-sm-12 col-md-6 col-lg-4">
+                  <div class="form-group">
+                    <label>Card Number:</label>
+                    <div class="input-group mb-0">
+                      <input ref="cardNumInput" v-model="card.number" type="tel" class="form-control" placeholder="#### #### #### ####" v-cardformat:formatCardNumber>
+                    </div>
+                    <div v-if="cardErrors.cardNumber" class="error">
+                      <small>{{ cardErrors.cardNumber }}</small>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row pt-2">
+                <div class="col-sm-12 col-md-6 col-lg-4">
+                  <div class="form-group">
+                    <label>Name on card:</label>
+                    <div class="input-group mb-0">
+                      <input ref="cardNumInput" v-model="card.name" type="input" class="form-control">
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row pt-2">
+                <div class="col-4 col-lg-2">
+                  <div class="form-group">
+                    <label>Card Expiration:</label>
+                    <input ref="cardExpInput" id="card-exp" v-model="card.expiry" maxlength="10" class="form-control" v-cardformat:formatCardExpiry>
+                    <div v-if="cardErrors.cardExpiry" class="error">
+                      <small>{{ cardErrors.cardExpiry }}</small>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-4 col-lg-2">
+                  <div class="form-group">
+                    <label>Card CVC:</label>
+                    <input ref="cardCvcInput" v-model="card.cvc" class="form-control" v-cardformat:formatCardCVC>
+                    <div v-if="cardErrors.cardCvc" class="error">
+                      <small>{{ cardErrors.cardCvc }}</small>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-12 pt-2">
+                  <p>SQLMatches doesn't store any card details, all payments are handle via Stripe.com.</p>
+                  <button type="button" class="btn btn-info" v-on:click="addCard"><span v-if="!cardId">Add</span><span v-else>Update</span> card</button>
+                </div>
+              </div>
+            </form>
 
             <div style="margin-top:25px;">
               <h3 style="margin-bottom:0.5rem;">Dangerous options</h3>
@@ -166,6 +222,7 @@ export default {
       validCommunityName: null,
       apiAccessDisabled: null,
       paymentRecords: null,
+      cardId: null,
       validateWebhookRegExp: new RegExp(/^((https|http):\/\/)(www.)?[a-z0-9]+(\.[a-z]{2,}){1,3}(#?\/?[a-zA-Z0-9#]+)*\/?(\?[a-zA-Z0-9-_]+=[a-zA-Z0-9-%]+&?)?$/),
       costPerMb: settings.costs.costPerMb,
       minUpload: settings.costs.minUpload,
@@ -191,13 +248,54 @@ export default {
           state: null,
           value: null
         }
+      },
+      card: {
+        cvc: null,
+        expiry: null,
+        number: null,
+        name: null
+      },
+      cardErrors: {
+        stripe: false
       }
     }
   },
   async created () {
     await this.getCommunity()
+    if (window.location.hash) {
+      this.changeTab(Number(window.location.hash.replace('#tab', '')))
+    }
   },
   methods: {
+    async addCard () {
+      var invalid = false
+
+      if (!this.$cardFormat.validateCardNumber(this.card.number)) {
+        this.cardErrors.cardNumber = 'Invalid Credit Card Number.'
+        invalid = true
+      }
+
+      if (!this.$cardFormat.validateCardExpiry(this.card.expiry)) {
+        this.cardErrors.cardExpiry = 'Invalid Expiration Date.'
+        invalid = true
+      }
+
+      if (!this.$cardFormat.validateCardCVC(this.card.cvc)) {
+        this.cardErrors.cardCvc = 'Invalid CVC.'
+        invalid = true
+      }
+
+      if (!invalid) {
+        var expiry = this.card.expiry.split(' / ')
+        var payload = {cvc: this.card.cvc, number: this.card.number.replace(' ', ''), name: this.card.name, exp_month: Number(expiry[0]), exp_year: Number(expiry[1])}
+
+        await axios.post(`/community/owner/payments/card/?community_name=${this.$route.params.communityName}&check_ownership=true`, payload).catch(_ => {
+          this.cardErrors.stripe = true
+        })
+      }
+
+      await this.getCommunity()
+    },
     changeTab (tab) {
       this.tabNumber = tab
     },
@@ -288,6 +386,7 @@ export default {
         this.form.max_upload = res.data.data.community.max_upload
         this.masterApiKey = res.data.data.community.master_api_key
         this.communityStats = res.data.data.stats
+        this.cardId = res.data.data.card_id
       }).catch(_ => {
         this.$router.push({name: 'PageNotFound'})
       })

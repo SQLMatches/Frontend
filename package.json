@@ -15,6 +15,7 @@
     "bootstrap-vue": "^2.19.0",
     "lodash": "^4.17.20",
     "vue": "^2.5.2",
+    "vue-credit-card-validation": "^0.1.10",
     "vue-router": "^3.0.1",
     "vue-socket.io": "^3.0.10"
   },

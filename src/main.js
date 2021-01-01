@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Axios from 'axios'
 import VueSocketIO from 'vue-socket.io'
+import VueCardFormat from 'vue-credit-card-validation'
 
 import { BootstrapVue, BootstrapVueIcons } from 'bootstrap-vue'
 
@@ -15,6 +16,7 @@ import settings from './settings.js'
 
 Vue.use(BootstrapVue)
 Vue.use(BootstrapVueIcons)
+Vue.use(VueCardFormat)
 Vue.use(
   new VueSocketIO({
     connection: settings.ws + settings.baseUrl,
