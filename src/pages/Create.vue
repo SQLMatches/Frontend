@@ -18,8 +18,9 @@
           <div class="card-body text-light create-community">
             <div v-if="stepCounter === 0">
               <b-form-group label="Community Name" label-for="community-name">
-                <b-form-input id="community-name" v-model="form.community_name" v-on:input="validateCommmunityName()" :state="communityNameState" autocomplete="off" placeholder="E.g. NexusLeague" required></b-form-input>
+                <b-form-input id="community-name" v-model="form.community_name" v-on:input="validateCommmunityNameDebounce()" :state="communityNameState && !nameTaken" autocomplete="off" placeholder="E.g. NexusLeague" required></b-form-input>
                 <p v-if="communityNameState === false">No special characters (@! etc.). No spaces. 4 - 32 characters.</p>
+                <p v-else-if="nameTaken">This community name is already taken!</p>
               </b-form-group>
 
               <b-form-group label="Email" label-for="community-email">
@@ -67,6 +68,7 @@
 
 <script>
 import axios from 'axios'
+import _ from 'lodash'
 
 import email from '../mixins/email.js'
 
@@ -82,6 +84,7 @@ export default {
       communityNameRegExp: new RegExp('^[a-zA-Z0-9]{4,32}$'),
       communityNameState: null,
       tosStatus: false,
+      nameTaken: false,
       form: {
         community_name: null,
         community_type: null,
@@ -90,21 +93,29 @@ export default {
     }
   },
   async created () {
+    this.validateCommmunityNameDebounce = _.debounce(this.validateCommmunityName, 500)
+
     await axios.get('/community/').then(res => {
       this.communityName = res.data.data.community_name
     })
   },
   methods: {
     requiredEntered () {
-      return this.tosStatus && this.communityNameState && this.emailState
+      return this.tosStatus && this.communityNameState && this.emailState && !this.nameTaken
     },
     setStepValue (value) {
       if (this.requiredEntered()) {
         this.stepCounter = value
       }
     },
-    validateCommmunityName () {
+    async validateCommmunityName () {
       this.communityNameState = this.communityNameRegExp.test(this.form.community_name)
+
+      if (this.communityNameState) {
+        await axios.get(`/community/exists/?community_name=${this.form.community_name}`).then(res => {
+          this.nameTaken = res.data.data.taken
+        })
+      }
     },
     async createCommunity () {
       await axios.post('/community/', this.form).then(res => {
