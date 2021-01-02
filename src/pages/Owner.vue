@@ -1,5 +1,7 @@
 <template>
   <div>
+    <b-alert v-if="paymentStatus === 2" variant="warning" show>Your subscription payment failed, please update your credit card details.</b-alert>
+
     <div class="card bg-dark content-div">
         <div class="card-body">
             <div class="row">
@@ -80,13 +82,19 @@
           </div>
           <div v-else-if="tabNumber === 2">
             <label for="cost"><h3>Adjust max upload</h3></label>
-            <b-form-input type="range" name="cost" :min="minUpload" :max="maxUpload" v-model="currentUpload"></b-form-input>
+            <b-form-input v-if="paymentStatus !== 0" type="range" name="cost" :min="minUpload" :max="maxUpload" v-model="currentUpload"></b-form-input>
+            <b-form-input v-else type="range" name="cost" :min="minUpload" :max="maxUpload" v-model="currentUpload" disabled></b-form-input>
+
             <div>Max upload size: {{ currentUpload }} MB</div>
             <div>Cost per month: {{ getCost() }} USD</div>
 
             <div v-if="cardId">
               <b-button v-if="minUpload >= currentUpload" variant="info" block disabled>Subscribe</b-button>
-              <b-button v-else v-on:click="createSub()" variant="info" block>Subscribe</b-button>
+                <b-button v-else-if="paymentStatus === null" v-on:click="createSub()" variant="info" block>Subscribe</b-button>
+                <b-button v-else-if="paymentStatus === 0" variant="info" disabled block>
+                  <b-spinner small></b-spinner>
+                  Waiting for payment confirmation...
+                </b-button>
             </div>
             <b-button v-else variant="info" block disabled>Add a card inorder to subscribe</b-button>
 
@@ -111,7 +119,7 @@
                   <div class="form-group">
                     <label>Name on card:</label>
                     <div class="input-group mb-0">
-                      <input ref="cardNumInput" v-model="card.name" type="input" class="form-control">
+                      <input ref="cardNumInput" v-model="card.name" placeholder="# ########" type="input" class="form-control">
                     </div>
                   </div>
                 </div>
@@ -120,7 +128,7 @@
                 <div class="col-4 col-lg-2">
                   <div class="form-group">
                     <label>Card Expiration:</label>
-                    <input ref="cardExpInput" id="card-exp" v-model="card.expiry" maxlength="10" class="form-control" v-cardformat:formatCardExpiry>
+                    <input ref="cardExpInput" id="card-exp" v-model="card.expiry" placeholder="## / ##" maxlength="10" class="form-control" v-cardformat:formatCardExpiry>
                     <div v-if="cardErrors.cardExpiry" class="error">
                       <small>{{ cardErrors.cardExpiry }}</small>
                     </div>
@@ -129,7 +137,7 @@
                 <div class="col-4 col-lg-2">
                   <div class="form-group">
                     <label>Card CVC:</label>
-                    <input ref="cardCvcInput" v-model="card.cvc" class="form-control" v-cardformat:formatCardCVC>
+                    <input ref="cardCvcInput" v-model="card.cvc" class="form-control" placeholder="###" v-cardformat:formatCardCVC>
                     <div v-if="cardErrors.cardCvc" class="error">
                       <small>{{ cardErrors.cardCvc }}</small>
                     </div>
@@ -228,11 +236,13 @@ export default {
       apiAccessDisabled: null,
       paymentRecords: null,
       cardId: null,
+      paymentStatus: null,
       validateWebhookRegExp: new RegExp(webhookReg),
       costPerMb: settings.costs.costPerMb,
       minUpload: settings.costs.minUpload,
       maxUpload: settings.costs.maxUpload,
       currentUpload: settings.costs.minUpload,
+      paymentId: null,
       webhooks: {
         submitState: false,
         length: {
@@ -262,6 +272,12 @@ export default {
         stripe: false
       }
     }
+  },
+  beforeRouteLeave (to, from, next) {
+    if (this.paymentId) {
+      this.sockets.unsubscribe(this.paymentId)
+    }
+    next()
   },
   async created () {
     await this.getCommunity()
@@ -318,13 +334,22 @@ export default {
       }
     },
     async createSub () {
-      await axios.post(`/community/owner/payments/?community_name=${this.$route.params.communityName}&check_ownership=true`, {amount: this.getCost()}).then(async _ => {
-        await this.getCommunity()
+      await axios.post(`/community/owner/payments/?community_name=${this.$route.params.communityName}&check_ownership=true`, {amount: this.getCost()}).then(res => {
+        this.paymentId = res.data.data.payment_id
+        this.paymentStatus = 0
+
+        this.sockets.subscribe(this.paymentId, (data) => {
+          if (data.paid) {
+            this.paymentStatus = 1
+          } else {
+            this.paymentStatus = 2
+          }
+        })
       })
     },
     async deleteCard () {
       await axios.delete(`/community/owner/payments/card/?community_name=${this.$route.params.communityName}&check_ownership=true`)
-      await this.getCommunity()
+      this.cardId = null
     },
     async addCard () {
       var invalid = false
@@ -350,11 +375,10 @@ export default {
 
         await axios.post(`/community/owner/payments/card/?community_name=${this.$route.params.communityName}&check_ownership=true`, payload).catch(_ => {
           this.cardErrors.stripe = true
-        }).then(_ => {
+        }).then(res => {
           this.cardErrors.stripe = false
+          this.cardId = res.data.data.card_id
         })
-
-        await this.getCommunity()
       }
     },
     async updateWebhooks () {
@@ -404,6 +428,7 @@ export default {
         this.masterApiKey = res.data.data.community.master_api_key
         this.communityStats = res.data.data.stats
         this.cardId = res.data.data.community.card_id
+        this.paymentStatus = res.data.data.community.payment_status
       }).catch(_ => {
         this.$router.push({name: 'PageNotFound'})
       })

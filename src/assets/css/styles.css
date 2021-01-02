@@ -396,14 +396,6 @@ a:hover {
   padding: 0 !important;
 }
 
-.create-community input[type=text]:focus {   
-  box-shadow: inset 0 -1px 0 #bbbbbb !important;
-}
-
-.create-community input {
-  color: #fff !important;
-}
-
 .create-community label {
   margin-bottom: 0 !important;
 }
@@ -492,21 +484,15 @@ input[data-error="true"]{
   cursor: pointer;
 }
 
-i{
-  font-size: 1.5rem;
+input {
+  color: #fff !important;
 }
 
-th{
-  padding: 5px;
-  background: #eee;
-}
-
-td{
-  padding: 0 5px;
-  border-bottom: 1px solid #eee;
+input:focus {   
+  box-shadow: inset 0 -1px 0 #9c27b0 !important;
 }
 
 ::placeholder {
   color: #fff !important;
-  opacity: 1;
+  opacity: 0.5;
 }

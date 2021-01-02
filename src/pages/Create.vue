@@ -46,6 +46,9 @@
 
                   <h4 style="margin-top:15px;">Community Type</h4>
                   <p style="text-transform:capitalize;">{{ form.community_type }}</p>
+
+                  <h4 style="margin-top:15px;">Email</h4>
+                  <p style="text-transform:capitalize;">{{ form.email }}</p>
                 </div>
             </div>
 
