@@ -95,6 +95,8 @@
                   <b-spinner small></b-spinner>
                   Waiting for payment confirmation...
                 </b-button>
+                <b-button v-else-if="paymentStatus === 2" variant="warning" disabled block>Card declined, please update your card details</b-button>
+                <b-button v-else-if="paymentStatus === 1" variant="success" disabled block>Payment accepted</b-button>
             </div>
             <b-button v-else variant="info" block disabled>Add a card inorder to subscribe</b-button>
 
