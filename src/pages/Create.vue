@@ -20,7 +20,7 @@
               <b-form-group label="Community Name" label-for="community-name">
                 <b-form-input id="community-name" v-model="form.community_name" v-on:input="validateCommmunityNameDebounce()" :state="communityNameState && !nameTaken" autocomplete="off" placeholder="E.g. NexusLeague" required></b-form-input>
                 <p v-if="communityNameState === false">No special characters (@! etc.). No spaces. 4 - 32 characters.</p>
-                <p v-else-if="nameTaken">This community name is already taken!</p>
+                <p v-else-if="nameTaken">'{{ form.community_name }}' is taken, please use a different name.</p>
               </b-form-group>
 
               <b-form-group label="Email" label-for="community-email">
