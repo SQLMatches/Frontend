@@ -206,6 +206,8 @@ import LoadMore from '../components/LoadMore.vue'
 import matches from '../mixins/matches.js'
 import settings from '../settings.js'
 
+const webhookReg = /(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})/
+
 export default {
   name: 'Owner',
   mixins: [
@@ -226,7 +228,7 @@ export default {
       apiAccessDisabled: null,
       paymentRecords: null,
       cardId: null,
-      validateWebhookRegExp: new RegExp(/^((https|http):\/\/)(www.)?[a-z0-9]+(\.[a-z]{2,}){1,3}(#?\/?[a-zA-Z0-9#]+)*\/?(\?[a-zA-Z0-9-_]+=[a-zA-Z0-9-%]+&?)?$/),
+      validateWebhookRegExp: new RegExp(webhookReg),
       costPerMb: settings.costs.costPerMb,
       minUpload: settings.costs.minUpload,
       maxUpload: settings.costs.maxUpload,
@@ -319,6 +321,10 @@ export default {
       await axios.post(`/community/owner/payments/?community_name=${this.$route.params.communityName}&check_ownership=true`, {amount: this.getCost()}).then(async _ => {
         await this.getCommunity()
       })
+    },
+    async deleteCard () {
+      await axios.delete(`/community/owner/payments/card/?community_name=${this.$route.params.communityName}&check_ownership=true`)
+      await this.getCommunity()
     },
     async addCard () {
       var invalid = false

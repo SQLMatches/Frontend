@@ -22,6 +22,10 @@
                 <p v-if="communityNameState === false">No special characters (@! etc.). No spaces. 4 - 32 characters.</p>
               </b-form-group>
 
+              <b-form-group label="Email" label-for="community-email">
+                <b-form-input id="community-email" v-model="form.email" v-on:input="validateEmail()" :state="emailState" autocomplete="off" placeholder="E.g. hi@wardpearce.com" required></b-form-input>
+              </b-form-group>
+
               <b-form-group label="I'm using this for" label-for="usage-question" style="margin-top:20px">
                 <b-form-radio name="usage-question" value="personal" v-model="form.community_type">Personal servers</b-form-radio>
                 <b-form-radio name="usage-question" value="community" v-model="form.community_type">Community servers</b-form-radio>
@@ -44,8 +48,8 @@
                 </div>
             </div>
 
-            <button v-if="stepCounter < 1 && tosStatus && communityNameState" v-on:click="stepCounter++" class="btn btn-info btn-block btn-lg" type="button">Next&nbsp;<b-icon icon="chevron-double-right" variant="light"></b-icon></button>
-            <button v-else-if="!tosStatus || !communityNameState" class="btn btn-info btn-block btn-lg" type="button" disabled>Next&nbsp;<b-icon icon="chevron-double-right" variant="light"></b-icon></button>
+            <button v-if="stepCounter < 1 && requiredEntered()" v-on:click="stepCounter++" class="btn btn-info btn-block btn-lg" type="button">Next&nbsp;<b-icon icon="chevron-double-right" variant="light"></b-icon></button>
+            <button v-else-if="!requiredEntered()" class="btn btn-info btn-block btn-lg" type="button" disabled>Next&nbsp;<b-icon icon="chevron-double-right" variant="light"></b-icon></button>
             <button v-else class="btn btn-info btn-block btn-lg" type="button" v-on:click="createCommunity()">Create community&nbsp;<b-icon icon="hand-thumbs-up" variant="light"></b-icon></button>
           </div>
       </div>
@@ -64,8 +68,13 @@
 <script>
 import axios from 'axios'
 
+import email from '../mixins/email.js'
+
 export default {
   name: 'Create',
+  mixins: [
+    email
+  ],
   data () {
     return {
       communityName: null,
@@ -74,8 +83,9 @@ export default {
       communityNameState: null,
       tosStatus: false,
       form: {
-        community_name: '',
-        community_type: null
+        community_name: null,
+        community_type: null,
+        email: null
       }
     }
   },
@@ -85,8 +95,11 @@ export default {
     })
   },
   methods: {
+    requiredEntered () {
+      return this.tosStatus && this.communityNameState && this.emailState
+    },
     setStepValue (value) {
-      if (this.tosStatus && this.communityNameState) {
+      if (this.requiredEntered()) {
         this.stepCounter = value
       }
     },
