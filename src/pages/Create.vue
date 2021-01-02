@@ -64,17 +64,12 @@
 <script>
 import axios from 'axios'
 
-import settings from '../settings.js'
-
 export default {
   name: 'Create',
   data () {
     return {
       communityName: null,
       stepCounter: 0,
-      costPerMb: settings.costs.costPerMb,
-      minUpload: settings.costs.minUpload,
-      maxUpload: settings.costs.maxUpload,
       communityNameRegExp: new RegExp('^[a-zA-Z0-9]{4,32}$'),
       communityNameState: null,
       tosStatus: false,

@@ -80,11 +80,14 @@
           </div>
           <div v-else-if="tabNumber === 2">
             <label for="cost"><h3>Adjust max upload</h3></label>
-            <b-form-input type="range" name="cost" :min="minUpload" :max="maxUpload" v-model="form.max_upload"></b-form-input>
-            <div>Max upload size: {{ form.max_upload }} MB</div>
-            <div>Cost per month: {{ ((form.max_upload - minUpload) * costPerMb).toFixed(2) }} USD</div>
+            <b-form-input type="range" name="cost" :min="minUpload" :max="maxUpload" v-model="currentUpload"></b-form-input>
+            <div>Max upload size: {{ currentUpload }} MB</div>
+            <div>Cost per month: {{ getCost() }} USD</div>
 
-            <b-button v-if="cardId" variant="info" block>Subscribe</b-button>
+            <div v-if="cardId">
+              <b-button v-if="minUpload >= currentUpload" variant="info" block disabled>Subscribe</b-button>
+              <b-button v-else v-on:click="createSub()" variant="info" block>Subscribe</b-button>
+            </div>
             <b-button v-else variant="info" block disabled>Add a card inorder to subscribe</b-button>
 
             <h3 style="margin-top:25px;">Card details</h3>
@@ -227,9 +230,7 @@ export default {
       costPerMb: settings.costs.costPerMb,
       minUpload: settings.costs.minUpload,
       maxUpload: settings.costs.maxUpload,
-      form: {
-        max_upload: settings.costs.minUpload
-      },
+      currentUpload: settings.costs.minUpload,
       webhooks: {
         submitState: false,
         length: {
@@ -267,34 +268,8 @@ export default {
     }
   },
   methods: {
-    async addCard () {
-      var invalid = false
-
-      if (!this.$cardFormat.validateCardNumber(this.card.number)) {
-        this.cardErrors.cardNumber = 'Invalid Credit Card Number.'
-        invalid = true
-      }
-
-      if (!this.$cardFormat.validateCardExpiry(this.card.expiry)) {
-        this.cardErrors.cardExpiry = 'Invalid Expiration Date.'
-        invalid = true
-      }
-
-      if (!this.$cardFormat.validateCardCVC(this.card.cvc)) {
-        this.cardErrors.cardCvc = 'Invalid CVC.'
-        invalid = true
-      }
-
-      if (!invalid) {
-        var expiry = this.card.expiry.split(' / ')
-        var payload = {cvc: this.card.cvc, number: this.card.number.replace(' ', ''), name: this.card.name, exp_month: Number(expiry[0]), exp_year: Number(expiry[1])}
-
-        await axios.post(`/community/owner/payments/card/?community_name=${this.$route.params.communityName}&check_ownership=true`, payload).catch(_ => {
-          this.cardErrors.stripe = true
-        })
-      }
-
-      await this.getCommunity()
+    getCost () {
+      return ((this.currentUpload - this.minUpload) * this.costPerMb).toFixed(2)
     },
     changeTab (tab) {
       this.tabNumber = tab
@@ -340,6 +315,42 @@ export default {
         this.webhooks.submitState = false
       }
     },
+    async createSub () {
+      await axios.post(`/community/owner/payments/?community_name=${this.$route.params.communityName}&check_ownership=true`, {amount: this.getCost()}).then(async _ => {
+        await this.getCommunity()
+      })
+    },
+    async addCard () {
+      var invalid = false
+
+      if (!this.$cardFormat.validateCardNumber(this.card.number)) {
+        this.cardErrors.cardNumber = 'Invalid Credit Card Number.'
+        invalid = true
+      }
+
+      if (!this.$cardFormat.validateCardExpiry(this.card.expiry)) {
+        this.cardErrors.cardExpiry = 'Invalid Expiration Date.'
+        invalid = true
+      }
+
+      if (!this.$cardFormat.validateCardCVC(this.card.cvc)) {
+        this.cardErrors.cardCvc = 'Invalid CVC.'
+        invalid = true
+      }
+
+      if (!invalid) {
+        var expiry = this.card.expiry.split(' / ')
+        var payload = {cvc: this.card.cvc, number: this.card.number.replace(' ', ''), name: this.card.name, exp_month: Number(expiry[0]), exp_year: 20 + Number(expiry[1])}
+
+        await axios.post(`/community/owner/payments/card/?community_name=${this.$route.params.communityName}&check_ownership=true`, payload).catch(_ => {
+          this.cardErrors.stripe = true
+        }).then(_ => {
+          this.cardErrors.stripe = false
+        })
+
+        await this.getCommunity()
+      }
+    },
     async updateWebhooks () {
       var payload = {}
 
@@ -383,10 +394,10 @@ export default {
         this.webhooks.roundEnd.value = res.data.data.community.round_end_webhook
 
         this.apiAccessDisabled = res.data.data.community.allow_api_access
-        this.form.max_upload = res.data.data.community.max_upload
+        this.currentUpload = res.data.data.community.max_upload
         this.masterApiKey = res.data.data.community.master_api_key
         this.communityStats = res.data.data.stats
-        this.cardId = res.data.data.card_id
+        this.cardId = res.data.data.community.card_id
       }).catch(_ => {
         this.$router.push({name: 'PageNotFound'})
       })
