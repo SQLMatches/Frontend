@@ -96,7 +96,7 @@
                   Waiting for payment confirmation...
                 </b-button>
                 <b-button v-else-if="paymentStatus === 2" variant="warning" disabled block>Card declined, please update your card details</b-button>
-                <b-button v-else-if="paymentStatus === 1" variant="success" disabled block>Payment accepted</b-button>
+                <b-button v-else variant="success" disabled block>Payment accepted</b-button>
             </div>
             <b-button v-else variant="info" block disabled>Add a card inorder to subscribe</b-button>
 
@@ -162,6 +162,15 @@
                 <b-button v-else variant="danger" block disabled>Confirm</b-button>
               </b-toast>
               <b-button variant="danger" v-on:click="$bvToast.show('community-disable')">Disable community</b-button>
+
+              <div style="margin-top:10px;">
+                <div v-if="cancelled !== true">
+                  <b-button variant="danger" v-if="paymentStatus === 2" v-on:click="cancelSub()">Cancel subscription</b-button>
+                  <b-button variant="danger" v-else disabled>Cancel subscription</b-button>
+                </div>
+                <b-button variant="danger" v-else disabled>Subscription already cancelled</b-button>
+              </div>
+
             </div>
           </div>
           <div v-else-if="tabNumber === 3" class="create-community">
@@ -250,6 +259,7 @@ export default {
       maxUpload: settings.costs.maxUpload,
       currentUpload: settings.costs.minUpload,
       paymentId: null,
+      cancelled: null,
       webhooks: {
         submitState: false,
         length: {
@@ -354,6 +364,10 @@ export default {
         })
       })
     },
+    async cancelSub () {
+      await axios.delete(`/community/owner/payments/?community_name=${this.$route.params.communityName}&check_ownership=true`)
+      this.cancelled = true
+    },
     async deleteCard () {
       await axios.delete(`/community/owner/payments/card/?community_name=${this.$route.params.communityName}&check_ownership=true`)
       this.cardId = null
@@ -426,16 +440,19 @@ export default {
     },
     async getCommunity () {
       await axios.get(`/community/owner/?community_name=${this.$route.params.communityName}&check_ownership=true`).then(res => {
-        this.webhooks.matchEnd.value = res.data.data.community.match_end_webhook
-        this.webhooks.matchStart.value = res.data.data.community.match_start_webhook
-        this.webhooks.roundEnd.value = res.data.data.community.round_end_webhook
+        var community = res.data.data.community
 
-        this.apiAccessDisabled = res.data.data.community.allow_api_access
-        this.currentUpload = res.data.data.community.max_upload
-        this.masterApiKey = res.data.data.community.master_api_key
+        this.webhooks.matchEnd.value = community.match_end_webhook
+        this.webhooks.matchStart.value = community.match_start_webhook
+        this.webhooks.roundEnd.value = community.round_end_webhook
+        this.apiAccessDisabled = community.allow_api_access
+        this.currentUpload = community.max_upload
+        this.masterApiKey = community.master_api_key
+        this.cardId = community.card_id
+        this.paymentStatus = community.payment_status
+        this.cancelled = community.cancelled
+
         this.communityStats = res.data.data.stats
-        this.cardId = res.data.data.community.card_id
-        this.paymentStatus = res.data.data.community.payment_status
       }).catch(_ => {
         this.$router.push({name: 'PageNotFound'})
       })
