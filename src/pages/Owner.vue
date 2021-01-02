@@ -1,6 +1,6 @@
 <template>
   <div>
-    <b-alert v-if="paymentStatus === 2" variant="warning" show>Your subscription payment failed, please update your credit card details.</b-alert>
+    <b-alert v-if="paymentStatus === 2" variant="warning" show>Your credit card was declined, please update your credit card details under the community tab.</b-alert>
 
     <div class="card bg-dark content-div">
         <div class="card-body">
@@ -194,8 +194,13 @@
               <b-list-group>
                 <b-list-group-item v-for="(payment, index) in paymentRecords" :key="index">
                   Payment ID: {{ payment.payment_id }} <br>
-                  Amount: {{ payment.amount_paid }} <br>
-                  Timestamp: {{ payment.timestamp }}
+                  Subscription ID: {{ payment.subscription_id }} <br>
+                  Amount: {{ payment.amount }} <br>
+                  Timestamp: {{ payment.timestamp }} <br>
+                  Expires: {{ payment.expires }} <br>
+                  Max upload: {{ payment.max_upload }} <br>
+                  Status: <span v-if="payment.payment_status === 0">Awaiting payment</span><span v-else-if="payment.payment_status === 1">Paid</span><span v-else>Declined</span> <br>
+                  <span v-if="payment.receipt_url">Receipt: <a :href="payment.receipt_url" target="_blank">Open in new tab</a></span>
                 </b-list-group-item>
               </b-list-group>
             </div>
