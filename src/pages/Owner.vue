@@ -175,7 +175,8 @@
           </div>
           <div v-else-if="tabNumber === 3" class="create-community">
               <p style="margin-bottom: 25px;">Get data pushed to endpoints on match events.</p>
-              <p style="margin-bottom: 25px;">Each payload pushes with BasicAuth authentication what has your master API key as the password, please validate this before using the payload.</p>
+              <p>Each payload pushes with BasicAuth authentication what has your master API key as the password, please validate this before using the payload.</p>
+              <p style="margin-bottom: 25px;">Be careful who you push webhooks to, because they'll be able to retrieve your master api key.</p>
 
               <b-form-group label="Match End Event" label-for="match-end-webhook">
                 <b-form-input v-model="webhooks.matchEnd.value" v-on:input="validateWebhook()" :state="webhooks.matchEnd.state" id="match-end-webhook" autocomplete="off" :placeholder="webhooks.matchEnd.value" required></b-form-input>
