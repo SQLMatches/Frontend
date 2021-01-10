@@ -14,7 +14,7 @@
               <th>Ping</th>
           </tr>
       </thead>
-      <tbody>
+      <tbody v-if="team.length > 0">
           <tr v-for="(player, index) in team" :key="index" v-on:click="loadSteamPage(player.steam_id)" style="cursor: pointer;">
               <td>{{ player.name }}</td>
               <td>{{ player.kills }}</td>
@@ -35,6 +35,7 @@
               <td>{{ player.ping }}</td>
           </tr>
       </tbody>
+      <h3 v-else class="text-center">No Players</h3>
   </table>
 </template>
 
