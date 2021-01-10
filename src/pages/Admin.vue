@@ -39,7 +39,7 @@ import SearchBar from '../components/SearchBar.vue'
 import LoadMore from '../components/LoadMore.vue'
 
 export default {
-  name: 'SiteOwner',
+  name: 'Admin',
   mixins: [
     communities
   ],

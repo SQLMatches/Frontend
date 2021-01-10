@@ -26,7 +26,7 @@ export default {
     }
   },
   beforeRouteLeave (to, from, next) {
-    if (this.matches.wsEnabled) {
+    if (this.communities.wsEnabled) {
       this.sockets.unsubscribe('community_updates')
     }
     next()

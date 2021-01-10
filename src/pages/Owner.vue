@@ -154,6 +154,12 @@
               </div>
             </form>
 
+            <h3 style="margin-bottom:0.5rem;margin-top:25px;">Update email</h3>
+            <b-form-group label="Email" label-for="email-update">
+              <b-form-input id="email-update" autocomplete="off" v-model="form.email" :state="emailState" :placeholder="email" v-on:input="validateEmail()" required></b-form-input>
+            </b-form-group>
+            <b-button variant="info" v-on:click="updateEmail()">Update email</b-button>
+
             <div style="margin-top:25px;">
               <h3 style="margin-bottom:0.5rem;">Dangerous options</h3>
               <b-toast id="community-disable" class="create-community" :title="`Please enter '${this.$route.params.communityName}' to disable it.`" static no-auto-hide>
@@ -229,6 +235,8 @@ import SearchBar from '../components/SearchBar.vue'
 import LoadMore from '../components/LoadMore.vue'
 
 import matches from '../mixins/matches.js'
+import email from '../mixins/email.js'
+
 import settings from '../settings.js'
 
 const webhookReg = /(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})/
@@ -236,7 +244,8 @@ const webhookReg = /(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z
 export default {
   name: 'Owner',
   mixins: [
-    matches
+    matches,
+    email
   ],
   components: {
     SearchBar,
@@ -251,6 +260,7 @@ export default {
       communityNameDisable: null,
       validCommunityName: null,
       apiAccessDisabled: null,
+      email: null,
       paymentRecords: null,
       cardId: null,
       paymentStatus: null,
@@ -261,6 +271,9 @@ export default {
       currentUpload: settings.costs.minUpload,
       paymentId: null,
       cancelled: null,
+      form: {
+        email: null
+      },
       webhooks: {
         submitState: false,
         length: {
@@ -350,6 +363,11 @@ export default {
       } else {
         this.webhooks.submitState = false
       }
+    },
+    async updateEmail () {
+      await axios.post(`/community/owner/update/?community_name=${this.$route.params.communityName}&check_ownership=true`, {email: this.form.email}).then(res => {
+        this.email = this.form.email
+      })
     },
     async createSub () {
       this.paymentStatus = 0
@@ -456,6 +474,7 @@ export default {
         this.cardId = community.card_id
         this.paymentStatus = community.payment_status
         this.cancelled = community.cancelled
+        this.email = community.email
 
         this.communityStats = res.data.data.stats
       }).catch(_ => {
