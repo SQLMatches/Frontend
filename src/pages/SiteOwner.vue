@@ -11,17 +11,21 @@
         <div class="card-body">
           <div v-if="tabNumber === 0">
             <search-bar v-on:input="getCommunities()" v-model="communities.search" :debounce="500"></search-bar>
-            <div v-if="communities.list.length > 0" class="row">
-                <div class="col-md-3" v-for="(community, index) in communities.list" :key="index" v-on:click="toggleBan(community.community_name)">
-                  <div class="card light team" v-bind:class="{'selected-to-delete': communitiesToBan.includes(community.community_name)}">
-                      <div class="card-body text-center">
-                        <h4 class="text-light card-title" style="margin-bottom:0;">{{ community.community_name }}</h4>
-                      </div>
+            <div style="margin-bottom: 25px">
+              <div v-if="communities.list.length > 0" class="row">
+                  <div class="col-md-3" v-for="(community, index) in communities.list" :key="index" v-on:click="toggleBan(community.community_name)">
+                    <div class="card light team" v-bind:class="{'selected-to-delete': communitiesToBan.includes(community.community_name)}">
+                        <div class="card-body text-center">
+                          <h4 class="text-light card-title" style="margin-bottom:0;">{{ community.community_name }}</h4>
+                        </div>
+                    </div>
                   </div>
-                </div>
+              </div>
+              <h3 v-else class="text-center text-light">No communities found</h3>
             </div>
-            <h3 v-else class="text-center text-light">No communities found</h3>
-            <load-more v-if="!communities.hideLoadMore" v-on:click="loadMoreCommunities"></load-more>
+
+            <b-button variant="danger" v-if="communitiesToBan.length > 0" block v-on:click="deleteCommunities()">Delete selected <span v-if="communitiesToBan.length > 1">communities</span><span v-else>community</span></b-button>
+            <b-button variant="danger" v-else block disabled>Delete selected community</b-button>
           </div>
         </div>
     </div>
@@ -62,7 +66,8 @@ export default {
       } else {
         this.communitiesToBan.push(communityName)
       }
-    }
+    },
+    async deleteCommunities () {}
   }
 }
 </script>
