@@ -9,6 +9,7 @@ import Create from '@/pages/Create'
 import Profile from '@/pages/Profile'
 import Community from '@/pages/Community'
 import Owner from '@/pages/Owner'
+import SiteOwner from '@/pages/SiteOwner'
 
 Vue.use(Router)
 
@@ -44,6 +45,11 @@ export default new Router({
       path: '/create',
       name: 'CreateCommunity',
       component: Create
+    },
+    {
+      path: '/owner',
+      name: 'SiteOwner',
+      component: SiteOwner
     },
     {
       path: '/login',
