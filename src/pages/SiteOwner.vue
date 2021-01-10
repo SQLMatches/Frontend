@@ -10,6 +10,7 @@
         </div>
         <div class="card-body">
           <div v-if="tabNumber === 0">
+            <search-bar v-on:input="getCommunities()" v-model="communities.search" :debounce="500"></search-bar>
             <div v-if="communities.list.length > 0" class="row">
                 <div class="col-md-3" v-for="(community, index) in communities.list" :key="index" v-on:click="toggleBan(community.community_name)">
                   <div class="card light team" v-bind:class="{'selected-to-delete': communitiesToBan.includes(community.community_name)}">
@@ -20,6 +21,7 @@
                 </div>
             </div>
             <h3 v-else class="text-center text-light">No communities found</h3>
+            <load-more v-if="!communities.hideLoadMore" v-on:click="loadMoreCommunities"></load-more>
           </div>
         </div>
     </div>
@@ -29,11 +31,18 @@
 <script>
 import communities from '../mixins/communities.js'
 
+import SearchBar from '../components/SearchBar.vue'
+import LoadMore from '../components/LoadMore.vue'
+
 export default {
   name: 'SiteOwner',
   mixins: [
     communities
   ],
+  components: {
+    SearchBar,
+    LoadMore
+  },
   data () {
     return {
       tabNumber: 0,
