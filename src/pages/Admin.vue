@@ -24,8 +24,8 @@
               <h3 v-else class="text-center text-light">No communities found</h3>
             </div>
 
-            <b-button variant="danger" v-if="communitiesToBan.length > 0" block v-on:click="deleteCommunities()">Delete selected <span v-if="communitiesToBan.length > 1">communities</span><span v-else>community</span></b-button>
-            <b-button variant="danger" v-else block disabled>Delete selected community</b-button>
+            <b-button variant="danger" v-if="communitiesToBan.length > 0" block v-on:click="banCommunities()">Ban selected <span v-if="communitiesToBan.length > 1">communities</span><span v-else>community</span></b-button>
+            <b-button variant="danger" v-else block disabled>Ban selected community</b-button>
           </div>
         </div>
     </div>
@@ -33,6 +33,8 @@
 </template>
 
 <script>
+import axios from 'axios'
+
 import communities from '../mixins/communities.js'
 
 import SearchBar from '../components/SearchBar.vue'
@@ -55,6 +57,10 @@ export default {
   },
   async created () {
     await this.getCommunities()
+
+    await axios.get('/admin/?check_root=true').catch(_ => {
+      this.$router.push({name: 'PageNotFound'})
+    })
   },
   methods: {
     changeTab (tab) {
@@ -67,7 +73,12 @@ export default {
         this.communitiesToBan.push(communityName)
       }
     },
-    async deleteCommunities () {}
+    async banCommunities () {
+      await axios.delete('/admin/communities/?check_root=true', {data: {communities: this.communitiesToBan}}).then(async _ => {
+        this.communitiesToBan = []
+        await this.getCommunities()
+      })
+    }
   }
 }
 </script>

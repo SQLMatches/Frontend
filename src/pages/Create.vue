@@ -58,14 +58,20 @@
           </div>
       </div>
     </div>
-      <div v-else class="card bg-dark content-div">
-          <div class="card-body text-center text-light">
-            <h4>Sorry you currently can only own one community.</h4>
-            <h5>Please delete / disable your community before trying to make a new one!</h5>
+    <div v-else-if="banned" class="card bg-dark content-div">
+        <div class="card-body text-center text-light">
+          <h4>You have been banned from SQLMatches.com</h4>
+          <h5>You can no longer make new communities.</h5>
+        </div>
+    </div>
+    <div v-else class="card bg-dark content-div">
+        <div class="card-body text-center text-light">
+          <h4>Sorry you currently can only own one community.</h4>
+          <h5>Please delete / disable your community before trying to make a new one!</h5>
 
-            <router-link class="text-light" :to="{name: 'CommunityPage', params: {'communityName': communityName}}">Go back to {{ communityName }}!</router-link>
-          </div>
-      </div>
+          <router-link class="text-light" :to="{name: 'CommunityPage', params: {'communityName': communityName}}">Go back to {{ communityName }}!</router-link>
+        </div>
+    </div>
   </div>
 </template>
 
@@ -83,6 +89,7 @@ export default {
   data () {
     return {
       communityName: null,
+      banned: false,
       stepCounter: 0,
       communityNameRegExp: new RegExp('^[a-zA-Z0-9]{4,32}$'),
       communityNameState: null,
@@ -100,6 +107,7 @@ export default {
 
     await axios.get('/community/').then(res => {
       this.communityName = res.data.data.community_name
+      this.banned = res.data.data.banned
     })
   },
   methods: {

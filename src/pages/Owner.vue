@@ -171,7 +171,7 @@
 
               <div style="margin-top:10px;">
                 <div v-if="!cancelled">
-                  <b-button variant="danger" v-if="paymentStatus !== 0" v-on:click="cancelSub()">Cancel subscription</b-button>
+                  <b-button variant="danger" v-if="paymentStatus !== 0 && paymentStatus != null" v-on:click="cancelSub()">Cancel subscription</b-button>
                   <b-button variant="danger" v-else disabled>Cancel subscription</b-button>
                 </div>
                 <b-button variant="danger" v-else disabled>Subscription already cancelled</b-button>
