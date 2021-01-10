@@ -90,7 +90,7 @@
 
             <div v-if="cardId">
               <b-button v-if="minUpload >= currentUpload" variant="info" block disabled>Subscribe</b-button>
-                <b-button v-else-if="paymentStatus === null" v-on:click="createSub()" variant="info" block>Subscribe</b-button>
+                <b-button v-else-if="paymentStatus === null || cancelled" v-on:click="createSub()" variant="info" block>Subscribe</b-button>
                 <b-button v-else-if="paymentStatus === 0" variant="info" disabled block>
                   <b-spinner small></b-spinner>
                   Waiting for payment confirmation...
@@ -164,8 +164,8 @@
               <b-button variant="danger" v-on:click="$bvToast.show('community-disable')">Disable community</b-button>
 
               <div style="margin-top:10px;">
-                <div v-if="cancelled !== true">
-                  <b-button variant="danger" v-if="paymentStatus === 2" v-on:click="cancelSub()">Cancel subscription</b-button>
+                <div v-if="!cancelled">
+                  <b-button variant="danger" v-if="paymentStatus !== 0" v-on:click="cancelSub()">Cancel subscription</b-button>
                   <b-button variant="danger" v-else disabled>Cancel subscription</b-button>
                 </div>
                 <b-button variant="danger" v-else disabled>Subscription already cancelled</b-button>
@@ -352,9 +352,11 @@ export default {
       }
     },
     async createSub () {
+      this.paymentStatus = 0
+      this.cancelled = false
+
       await axios.post(`/community/owner/payments/?community_name=${this.$route.params.communityName}&check_ownership=true`, {amount: this.getCost()}).then(res => {
         this.paymentId = res.data.data.payment_id
-        this.paymentStatus = 0
 
         this.sockets.subscribe(this.paymentId, (data) => {
           if (data.paid) {
@@ -363,6 +365,8 @@ export default {
             this.paymentStatus = 2
           }
         })
+      }).catch(_ => {
+        this.paymentStatus = 2
       })
     },
     async cancelSub () {
