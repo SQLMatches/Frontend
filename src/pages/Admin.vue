@@ -4,8 +4,7 @@
         <div class="card-header">
             <b-tabs fill>
                 <b-tab title="Communities" active v-on:click="changeTab(0)"></b-tab>
-                <b-tab title="Matches" v-on:click="changeTab(1)"></b-tab>
-                <b-tab title="Version Messages" v-on:click="changeTab(2); getVersions()"></b-tab>
+                <b-tab title="Version Messages" v-on:click="changeTab(1); getVersions()"></b-tab>
             </b-tabs>
         </div>
         <div class="card-body">
@@ -27,7 +26,6 @@
             <b-button variant="danger" v-if="communitiesToBan.length > 0" block v-on:click="banCommunities()">Ban selected <span v-if="communitiesToBan.length > 1">communities</span><span v-else>community</span></b-button>
             <b-button variant="danger" v-else block disabled>Ban selected community</b-button>
           </div>
-          <div v-else-if="tabNumber === 1"></div>
           <div v-else>
             <b-form inline class="d-flex justify-content-center mb-3">
               <b-form-input v-model="form.major" placeholder="Major" type="number" autocomplete="off"></b-form-input>
