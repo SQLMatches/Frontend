@@ -35,7 +35,7 @@
               <td>{{ player.ping }}</td>
           </tr>
       </tbody>
-      <h3 v-else class="text-center">No Players</h3>
+      <h3 v-else style="transform: translate(380%, 0%);">No Players</h3>
   </table>
 </template>
 
