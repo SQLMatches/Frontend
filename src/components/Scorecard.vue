@@ -43,7 +43,7 @@
 export default {
   props: {
     'team': {
-      default: [],
+      default: () => [],
       type: Array
     },
     'communityName': {
