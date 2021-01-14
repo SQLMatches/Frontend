@@ -292,6 +292,12 @@ thead {
   }
 }
 
+@media (max-width:767px) {
+  .matches h2 {
+    font-size: 1.1rem;
+  }
+}
+
 .footer-dark .item.text p {
   opacity: 0.6;
   margin-bottom: 0;

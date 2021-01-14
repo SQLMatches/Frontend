@@ -3,7 +3,7 @@
     <ul v-if="matches.length > 0" class="list-unstyled matches">
         <li v-for="(match, index) in matches" :key="index">
             <router-link :to="{name: 'Scoreboard', params: {matchID: match.match_id, communityName: match.community_name}}">
-              <div class="card match" v-b-tooltip.hover :title="`${match.timestamp} - ${match.map}`">
+              <div class="card match" :id="match.match_id" v-b-tooltip.hover :title="`${match.timestamp} - ${match.map}`">
                 <img class="card-img w-100 d-block" :src="match.cover_image">
                   <div class="card-img-overlay d-flex d-xl-flex flex-column flex-grow-0 flex-shrink-0 justify-content-center align-items-center justify-content-xl-center align-items-xl-center">
                       <div class="row no-gutters row-cols-3 match">
@@ -19,6 +19,10 @@
                       </div>
                   </div>
               </div>
+
+              <b-tooltip v-if="match.status === 1" variant="success" :show.sync="giveTrue" :target="match.match_id" placement="left">
+                <strong>Live Now!</strong>
+              </b-tooltip>
             </router-link>
         </li>
     </ul>
@@ -30,6 +34,11 @@
 export default {
   props: [
     'matches'
-  ]
+  ],
+  data () {
+    return {
+      giveTrue: true
+    }
+  }
 }
 </script>
