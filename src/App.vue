@@ -24,7 +24,11 @@
     </b-navbar>
 
     <div class="container">
-      <div v-if="loggedIn">
+      <div v-if="loading" class="col-md-12 d-flex justify-content-center mb-3" style="margin-top:25px;">
+        <h3 class="text-light">Loading...</h3>
+        <b-spinner variant="light" label="Loading..."></b-spinner>
+      </div>
+      <div v-else-if="loggedIn">
         <router-view/>
       </div>
       <div v-else class="text-center text-light" style="margin-top:150px">
@@ -46,10 +50,13 @@ export default {
       loggedIn: false,
       banned: false,
       communityName: null,
-      communityPageName: null
+      communityPageName: null,
+      loading: true
     }
   },
   async created () {
+    this.loading = true
+
     await axios.get('/community/').then(res => {
       this.loggedIn = true
       this.communityName = res.data.data.community_name
@@ -61,6 +68,8 @@ export default {
     })
 
     this.setCommunityPageName()
+
+    this.loading = false
   },
   watch: {
     '$route.path': function () {
