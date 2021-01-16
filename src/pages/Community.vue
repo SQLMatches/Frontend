@@ -37,11 +37,11 @@ export default {
     LoadMore
   },
   async beforeRouteUpdate (to, from, next) {
-    if (to.name === from.name && to.params !== from.params) {
-      await this.loadCommunity(to.params.communityName)
-    }
-
     next()
+
+    if (to.name === from.name && to.params !== from.params) {
+      await this.loadCommunity()
+    }
   },
   data () {
     return {
@@ -50,11 +50,11 @@ export default {
     }
   },
   async created () {
-    await this.loadCommunity(this.$route.params.communityName)
+    await this.loadCommunity()
   },
   methods: {
-    async loadCommunity (communityName) {
-      await axios.get(`/community/public/?community_name=${communityName}`).then(async res => {
+    async loadCommunity () {
+      await axios.get(`/community/public/?community_name=${this.$route.params.communityName}`).then(async res => {
         this.banned = res.data.data.banned
         this.disabled = res.data.data.disabled
 
