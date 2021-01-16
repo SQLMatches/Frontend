@@ -8,8 +8,8 @@
             <div class="card bg-dark content-div">
                 <div class="card-body">
                     <search-bar v-on:input="getMatches()" v-model="matches.search" :debounce="500"></search-bar>
-                    <games :matches="matches.list"></games>
-                    <load-more v-if="!matches.hideLoadMore" v-on:click="loadMoreMatches"></load-more>
+                    <games :matches="matches"></games>
+                    <load-more v-if="!matches.hideLoadMore & !matches.loading" v-on:click="loadMoreMatches"></load-more>
                 </div>
             </div>
         </div>

@@ -8,7 +8,8 @@ export default {
         search: null,
         hideLoadMore: false,
         newPerPage: null,
-        wsEnabled: true
+        wsEnabled: true,
+        loading: true
       }
     }
   },
@@ -43,6 +44,8 @@ export default {
   },
   methods: {
     async getMatches (pageNumber, addToCurrent = false) {
+      this.matches.loading = true
+
       var payload = {}
 
       if (this.matches.search) {
@@ -76,6 +79,8 @@ export default {
       } else {
         this.matches.hideLoadMore = false
       }
+
+      this.matches.loading = false
     },
     async loadMoreMatches (pageNumber) {
       var oldMatchLen = this.matches.list.length

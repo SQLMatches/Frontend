@@ -1,7 +1,10 @@
 <template lang="html">
   <div>
-    <div v-if="communities.length > 0" class="row">
-        <div class="col-md-3" v-for="(community, index) in communities" :key="index">
+    <div v-if="communities.loading" class="d-flex justify-content-center mb-3">
+      <b-spinner variant="light" label="Loading..."></b-spinner>
+    </div>
+    <div v-else-if="communities.list.length > 0" class="row">
+        <div class="col-md-3" v-for="(community, index) in communities.list" :key="index">
           <router-link :to="{name: 'CommunityPage', params: {'communityName': community.community_name}}">
             <div class="card light team">
                 <div class="card-body text-center">

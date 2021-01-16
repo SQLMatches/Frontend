@@ -1,6 +1,10 @@
 <template>
     <div class="row">
-        <div class="col-md-12">
+        <div v-if="loading" class="col-md-12 d-flex justify-content-center mb-3" style="margin-top:25px;">
+          <h3 class="text-light">Loading...</h3>
+          <b-spinner variant="light" label="Loading..."></b-spinner>
+        </div>
+        <div v-else class="col-md-12">
             <div class="card bg-dark content-div">
                 <div class="card-body">
                     <h2 class="text-center text-light">Team {{ scoreboard.team_1_name }}</h2>
@@ -54,7 +58,8 @@ export default {
   data () {
     return {
       scoreboard: {},
-      wsConnection: null
+      wsConnection: null,
+      loading: true
     }
   },
   async created () {
@@ -70,11 +75,15 @@ export default {
   },
   methods: {
     async getScoreboard (matchID, communityName) {
-      axios.get(`/match/${matchID}/?community_name=${communityName}`).then(res => {
+      this.loading = true
+
+      await axios.get(`/match/${matchID}/?community_name=${communityName}`).then(res => {
         this.scoreboard = res.data.data
       }).catch(_ => {
         this.$router.push({name: 'PageNotFound'})
       })
+
+      this.loading = false
     }
   }
 }

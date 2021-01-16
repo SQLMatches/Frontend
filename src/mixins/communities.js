@@ -8,7 +8,8 @@ export default {
         search: null,
         hideLoadMore: false,
         newPerPage: 10,
-        wsEnabled: true
+        wsEnabled: true,
+        loading: true
       }
     }
   },
@@ -33,6 +34,8 @@ export default {
   },
   methods: {
     async getCommunities (pageNumber, addToCurrent = false) {
+      this.communities.loading = true
+
       var payload = {}
 
       if (this.communities.search) {
@@ -50,6 +53,8 @@ export default {
           this.communities.list = res.data.data.concat(this.communities.list)
         }
       })
+
+      this.communities.loading = false
     },
     async loadMoreCommunities (pageNumber) {
       var oldCommunitiesLen = this.communities.list.length

@@ -15,8 +15,8 @@
                 <div class="card-body">
                     <h3 class="text-light card-title">Recent Matches</h3>
                     <search-bar v-on:input="getMatches()" v-model="matches.search" :debounce="500"></search-bar>
-                    <games :matches="matches.list"></games>
-                    <load-more v-if="!matches.hideLoadMore" v-on:click="loadMoreMatches"></load-more>
+                    <games :matches="matches"></games>
+                    <load-more v-if="!matches.hideLoadMore & !matches.loading" v-on:click="loadMoreMatches"></load-more>
                 </div>
             </div>
         </div>
@@ -27,8 +27,8 @@
               <div class="card-body">
                   <h3 class="text-light card-title">Communities</h3>
                   <search-bar v-on:input="getCommunities()" v-model="communities.search" :debounce="500"></search-bar>
-                  <communities :communities="communities.list"></communities>
-                  <load-more v-if="!communities.hideLoadMore" v-on:click="loadMoreCommunities"></load-more>
+                  <communities :communities="communities"></communities>
+                  <load-more v-if="!communities.hideLoadMore & !communities.loading" v-on:click="loadMoreCommunities"></load-more>
               </div>
           </div>
       </div>
@@ -64,6 +64,9 @@ export default {
   },
   methods: {
     async getHomeContents () {
+      this.matches.loading = true
+      this.communities.loading = true
+
       await axios.get('/communities/all/').then(res => {
         this.communities.list = res.data.data.communities
         this.matches.list = res.data.data.matches
@@ -76,6 +79,9 @@ export default {
           this.communities.hideLoadMore = true
         }
       })
+
+      this.matches.loading = false
+      this.communities.loading = false
     }
   }
 }
