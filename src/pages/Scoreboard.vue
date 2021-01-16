@@ -22,6 +22,9 @@
                     &nbsp;Download&nbsp;<b-icon icon="arrow-down-short" variant="light"></b-icon>
                   </button>
                 </router-link>
+                <button v-else-if="scoreboard.demo_status == 4" class="btn btn-dark btn-sm" type="button" style="margin-top: 8px;" disabled>
+                  &nbsp;Demo expired&nbsp;<b-icon icon="emoji-expressionless-fill" variant="light"></b-icon>
+                </button>
                 <button v-else class="btn btn-dark btn-sm" type="button" style="margin-top: 8px;" disabled>
                   &nbsp;Demo too large&nbsp;<b-icon icon="credit-card-fill" variant="light"></b-icon>
                 </button>
