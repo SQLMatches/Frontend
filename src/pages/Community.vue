@@ -36,6 +36,13 @@ export default {
     SearchBar,
     LoadMore
   },
+  async beforeRouteUpdate (to, from, next) {
+    if (to.name === from.name && to.params !== from.params) {
+      await this.loadCommunity(to.params.communityName)
+    }
+
+    next()
+  },
   data () {
     return {
       banned: false,
@@ -43,14 +50,19 @@ export default {
     }
   },
   async created () {
-    await axios.get(`/community/public/?community_name=${this.$route.params.communityName}`).then(async res => {
-      this.banned = res.data.data.banned
-      this.disabled = res.data.data.disabled
+    await this.loadCommunity(this.$route.params.communityName)
+  },
+  methods: {
+    async loadCommunity (communityName) {
+      await axios.get(`/community/public/?community_name=${communityName}`).then(async res => {
+        this.banned = res.data.data.banned
+        this.disabled = res.data.data.disabled
 
-      await this.getMatches()
-    }).catch(_ => {
-      this.$router.push({name: 'PageNotFound'})
-    })
+        await this.getMatches()
+      }).catch(_ => {
+        this.$router.push({name: 'PageNotFound'})
+      })
+    }
   }
 }
 </script>

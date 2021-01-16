@@ -100,6 +100,8 @@ import LoadMore from '../components/LoadMore.vue'
 
 import matches from '../mixins/matches.js'
 
+import settings from '../settings.js'
+
 export default {
   name: 'Profile',
   mixins: [
@@ -132,7 +134,7 @@ export default {
 
     this.loading = false
 
-    await axios.get(`https://cors-anywhere.herokuapp.com/http://steamcommunity.com/profiles/${this.$route.params.steamID}?xml=1`, {responseType: 'text'}).then(res => {
+    await axios.get(`${settings.http}cors-anywhere.herokuapp.com/http://steamcommunity.com/profiles/${this.$route.params.steamID}?xml=1`, {responseType: 'text'}).then(res => {
       var steamXml = new DOMParser().parseFromString(res.data, 'text/xml')
       this.profilePfp = steamXml.getElementsByTagName('avatarFull')[0].childNodes[0].nodeValue
       this.vacBans = steamXml.getElementsByTagName('vacBanned')[0].childNodes[0].nodeValue
