@@ -10,6 +10,7 @@ import Profile from '@/pages/Profile'
 import Community from '@/pages/Community'
 import Owner from '@/pages/Owner'
 import Admin from '@/pages/Admin'
+import TOS from '@/pages/Tos'
 
 Vue.use(Router)
 
@@ -20,6 +21,11 @@ export default new Router({
       path: '/',
       name: 'Home',
       component: Home
+    },
+    {
+      path: '/tos',
+      name: 'Tos',
+      component: TOS
     },
     {
       path: '/c/:communityName',

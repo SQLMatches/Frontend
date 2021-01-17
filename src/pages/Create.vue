@@ -35,7 +35,7 @@
               </b-form-group>
 
               <b-form-checkbox v-model="tosStatus" :value="true">
-                I accept the terms and use
+                <a href="/tos" class="text-light" target="_blank" rel="noopener noreferrer">I accept the terms and use</a>
               </b-form-checkbox>
             </div>
 
