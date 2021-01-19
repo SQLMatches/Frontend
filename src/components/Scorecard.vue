@@ -24,7 +24,7 @@
               <td v-if="player.kills > 0 && player.deaths > 0">{{ (player.kills / player.deaths).toFixed(2) }}</td>
               <td v-else>0.0</td>
 
-              <td v-if="player.kills > 0 && player.headshots > 0">{{ ((player.kills / player.headshots) * 100).toFixed(2) }}%</td>
+              <td v-if="player.kills > 0 && player.headshots > 0">{{ ((player.headshots / player.kills) * 100).toFixed(2) }}%</td>
               <td v-else>0.0</td>
 
               <td v-if="player.shots_fired > 0 && player.shots_hit > 0">{{ ((player.shots_hit / player.shots_fired) * 100).toFixed(2) }}%</td>

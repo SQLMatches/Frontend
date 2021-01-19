@@ -2,11 +2,13 @@
     <div class="card text-light bg-dark content-div">
         <b-alert v-if="vacBans > 0" variant="warning" show>{{ profile.name }} has {{ vacBans }} VAC Ban<span v-if="vacBans > 1">s</span></b-alert>
 
-        <div class="card-body text-center">
-          <img v-if="profilePfp !== ''" class="rounded-circle" :src="profilePfp" width="112">
-          <b-spinner v-else label="Spinning"></b-spinner>
-          <h1>{{ profile.name }}</h1>
-        </div>
+        <a :href="`https://steamcommunity.com/profiles/${$route.params.steamID}`" class="text-light" target="_blank" rel="noopener noreferrer">
+          <div class="card-body text-center">
+            <img v-if="profilePfp !== ''" class="rounded-circle" :src="profilePfp" width="112">
+            <b-spinner v-else label="Spinning"></b-spinner>
+            <h1>{{ profile.name }}</h1>
+          </div>
+        </a>
         <div class="card-header">
           <b-tabs fill>
             <b-tab title="Statistics" active>
