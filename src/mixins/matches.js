@@ -69,8 +69,7 @@ export default {
         if (!addToCurrent) {
           this.matches.list = res.data.data
         } else {
-          console.log(res.data.data)
-          this.matches.list = res.data.data.concat(this.matches.list)
+          this.matches.list.push(res.data.data)
         }
       })
 

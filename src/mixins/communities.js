@@ -50,7 +50,7 @@ export default {
         if (!addToCurrent) {
           this.communities.list = res.data.data
         } else {
-          this.communities.list = res.data.data.concat(this.communities.list)
+          this.communities.list.push(res.data.data)
         }
       })
 
