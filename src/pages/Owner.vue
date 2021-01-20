@@ -1,6 +1,6 @@
 <template>
   <div>
-    <b-alert show dismissible class="content-div">
+    <b-alert v-if="!subscriptionExpires" show dismissible class="content-div">
       Need to upload demos over 50 MB? Check out the Subscriptions / Billing tab!
     </b-alert>
 
