@@ -3,8 +3,12 @@
     <div class="row">
         <div class="col-md-12">
             <div class="card bg-dark content-div">
-                <div class="card-body">
-                    <h3 class="text-light card-title">SQLMatches 0.1.0</h3>
+                <div class="card-body text-light">
+                    <h3 class="card-title">SQLMatches 0.2.0</h3>
+                    <p>SQLMatches allows you to create communities to easily record demos & to view scoreboards in real-time. Including a per community profile system, caching, live updating, moderation tools & more!</p>
+
+                    <h4 style="margin-top:25px;">Increasing max upload</h4>
+                    <p>Are you wanting to upload 64 / 128 tick demos or maybe just longer demos? Check out the 'Subscriptions / Billing' tab on the Owner Panel.</p>
                 </div>
             </div>
         </div>

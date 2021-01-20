@@ -130,7 +130,7 @@ export default {
     },
     async createCommunity () {
       await axios.post('/community/', this.form).then(res => {
-        window.location.href = `/c/${res.data.data.community_name}/owner#tab2`
+        window.location.href = `/c/${res.data.data.community_name}/owner`
       })
     }
   }

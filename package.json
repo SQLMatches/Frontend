@@ -11,6 +11,7 @@
     "build": "node build/build.js"
   },
   "dependencies": {
+    "@vue-stripe/vue-stripe": "^4.0.3",
     "axios": "^0.21.0",
     "bootstrap-vue": "^2.19.0",
     "lodash": "^4.17.20",

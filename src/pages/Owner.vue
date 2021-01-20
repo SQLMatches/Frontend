@@ -1,6 +1,14 @@
 <template>
   <div>
-    <b-alert v-if="paymentStatus === 2" variant="warning" show>Your credit card was declined, please update your credit card details under the community tab.</b-alert>
+    <b-alert show dismissible class="content-div">
+      Need to upload demos over 50 MB? Check out the Subscriptions / Billing tab!
+    </b-alert>
+
+    <stripe-checkout
+      ref="checkoutRef"
+      :pk="stripe.publishableKey"
+      :session-id="stripe.sessionId"
+    />
 
     <div class="card bg-dark content-div">
         <div class="card-body">
@@ -31,7 +39,8 @@
                 <b-tab title="Matches" v-on:click="changeTab(1); getMatches()"></b-tab>
                 <b-tab title="Community" v-on:click="changeTab(2)"></b-tab>
                 <b-tab title="Webhooks" v-on:click="changeTab(3)"></b-tab>
-                <b-tab title="Payments" v-on:click="changeTab(4); getPayments()"></b-tab>
+                <b-tab v-if="subscriptionExpires" title="Subscriptions / Billing" v-on:click="loadBillingSession()"></b-tab>
+                <b-tab v-else title="Subscriptions / Billing" v-on:click="loadCheckoutSession()"></b-tab>
             </b-tabs>
         </div>
         <div class="card-body">
@@ -81,80 +90,7 @@
             <b-button variant="danger" v-else block disabled>Delete selected match</b-button>
           </div>
           <div v-else-if="tabNumber === 2">
-            <label for="cost"><h3>Adjust max upload</h3></label>
-            <b-form-input v-if="paymentStatus !== 0" type="range" name="cost" :min="minUpload" :max="maxUpload" v-model="currentUpload"></b-form-input>
-            <b-form-input v-else type="range" name="cost" :min="minUpload" :max="maxUpload" v-model="currentUpload" disabled></b-form-input>
-
-            <div>Max upload size: {{ currentUpload }} MB</div>
-            <div>Cost per month: {{ getCost() }} USD</div>
-
-            <div v-if="cardId">
-              <b-button v-if="minUpload >= currentUpload" variant="info" block disabled>Subscribe</b-button>
-                <b-button v-else-if="paymentStatus === null || cancelled" v-on:click="createSub()" variant="info" block>Subscribe</b-button>
-                <b-button v-else-if="paymentStatus === 0" variant="info" disabled block>
-                  <b-spinner small></b-spinner>
-                  Waiting for payment confirmation...
-                </b-button>
-                <b-button v-else-if="paymentStatus === 2" variant="warning" disabled block>Card declined, please update your card details</b-button>
-                <b-button v-else variant="success" disabled block>Payment accepted</b-button>
-            </div>
-            <b-button v-else variant="info" block disabled>Add a card inorder to subscribe</b-button>
-
-            <h3 style="margin-top:25px;">Card details</h3>
-            <p class="text-danger" v-if="cardErrors.stripe">Card wasn't accepted by Stripe</p>
-            <form>
-              <div class="row pt-4">
-                <div class="col-sm-12 col-md-6 col-lg-4">
-                  <div class="form-group">
-                    <label>Card Number:</label>
-                    <div class="input-group mb-0">
-                      <input ref="cardNumInput" v-model="card.number" type="tel" class="form-control" placeholder="#### #### #### ####" v-cardformat:formatCardNumber>
-                    </div>
-                    <div v-if="cardErrors.cardNumber" class="error">
-                      <small>{{ cardErrors.cardNumber }}</small>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="row pt-2">
-                <div class="col-sm-12 col-md-6 col-lg-4">
-                  <div class="form-group">
-                    <label>Name on card:</label>
-                    <div class="input-group mb-0">
-                      <input ref="cardNumInput" v-model="card.name" placeholder="# ########" type="input" class="form-control">
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="row pt-2">
-                <div class="col-4 col-lg-2">
-                  <div class="form-group">
-                    <label>Card Expiration:</label>
-                    <input ref="cardExpInput" id="card-exp" v-model="card.expiry" placeholder="## / ##" maxlength="10" class="form-control" v-cardformat:formatCardExpiry>
-                    <div v-if="cardErrors.cardExpiry" class="error">
-                      <small>{{ cardErrors.cardExpiry }}</small>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-4 col-lg-2">
-                  <div class="form-group">
-                    <label>Card CVC:</label>
-                    <input ref="cardCvcInput" v-model="card.cvc" class="form-control" placeholder="###" v-cardformat:formatCardCVC>
-                    <div v-if="cardErrors.cardCvc" class="error">
-                      <small>{{ cardErrors.cardCvc }}</small>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-12 pt-2">
-                  <p>SQLMatches doesn't store any card details, all payments are handle via Stripe.com.</p>
-                  <button type="button" class="btn btn-info" v-on:click="addCard"><span v-if="!cardId">Add</span><span v-else>Update</span> card</button>
-                </div>
-              </div>
-            </form>
-
-            <h3 style="margin-bottom:0.5rem;margin-top:25px;">Update email</h3>
+            <h3 style="margin-bottom:0.5rem;">Update email</h3>
             <b-form-group label="Email" label-for="email-update">
               <b-form-input id="email-update" autocomplete="off" v-model="form.email" :state="emailState" :placeholder="email" v-on:input="validateEmail()" required></b-form-input>
             </b-form-group>
@@ -168,18 +104,9 @@
                 <b-button v-else variant="danger" block disabled>Confirm</b-button>
               </b-toast>
               <b-button variant="danger" v-on:click="$bvToast.show('community-disable')">Disable community</b-button>
-
-              <div style="margin-top:10px;">
-                <div v-if="!cancelled">
-                  <b-button variant="danger" v-if="paymentStatus !== 0 && paymentStatus != null" v-on:click="cancelSub()">Cancel subscription</b-button>
-                  <b-button variant="danger" v-else disabled>Cancel subscription</b-button>
-                </div>
-                <b-button variant="danger" v-else disabled>Subscription already cancelled</b-button>
-              </div>
-
             </div>
           </div>
-          <div v-else-if="tabNumber === 3" class="create-community">
+          <div v-else class="create-community">
               <p style="margin-bottom: 25px;">Get data pushed to endpoints on match events.</p>
               <p>Each payload pushes with BasicAuth authentication what has your master API key as the password, please validate this before using the payload.</p>
               <p style="margin-bottom: 25px;">Be careful who you push webhooks to, because they'll be able to retrieve your master api key.</p>
@@ -201,28 +128,6 @@
                 <b-button variant="primary" v-on:click="updateWebhooks()" disabled>Update Webhooks</b-button>
               </div>
           </div>
-          <div v-else-if="tabNumber === 4">
-            <div v-if="paymentRecords == null" class="d-flex justify-content-center mb-3">
-              <b-spinner></b-spinner>
-            </div>
-            <h3 v-else-if="paymentRecords.length === 0" class="text-center">No payment logs :/</h3>
-            <div v-else>
-              <h3>Payments</h3>
-
-              <b-list-group>
-                <b-list-group-item v-for="(payment, index) in paymentRecords" :key="index">
-                  Payment ID: {{ payment.payment_id }} <br>
-                  Subscription ID: {{ payment.subscription_id }} <br>
-                  Amount: {{ payment.amount }} <br>
-                  Timestamp: {{ payment.timestamp }} <br>
-                  Expires: {{ payment.expires }} <br>
-                  Max upload: {{ payment.max_upload }} <br>
-                  Status: <span v-if="payment.payment_status === 0">Awaiting payment</span><span v-else-if="payment.payment_status === 1">Paid</span><span v-else>Declined</span> <br>
-                  <span v-if="payment.receipt_url">Receipt: <a :href="payment.receipt_url" target="_blank">Open in new tab</a></span>
-                </b-list-group-item>
-              </b-list-group>
-            </div>
-          </div>
         </div>
     </div>
   </div>
@@ -230,6 +135,8 @@
 
 <script>
 import axios from 'axios'
+
+import { StripeCheckout } from '@vue-stripe/vue-stripe'
 
 import SearchBar from '../components/SearchBar.vue'
 import LoadMore from '../components/LoadMore.vue'
@@ -248,6 +155,7 @@ export default {
     email
   ],
   components: {
+    StripeCheckout,
     SearchBar,
     LoadMore
   },
@@ -262,17 +170,14 @@ export default {
       apiAccessDisabled: null,
       email: null,
       paymentRecords: null,
-      cardId: null,
-      paymentStatus: null,
+      subscriptionExpires: null,
       validateWebhookRegExp: new RegExp(webhookReg),
-      costPerMb: settings.costs.costPerMb,
-      minUpload: settings.costs.minUpload,
-      maxUpload: settings.costs.maxUpload,
-      currentUpload: settings.costs.minUpload,
-      paymentId: null,
-      cancelled: null,
       form: {
         email: null
+      },
+      stripe: {
+        publishableKey: settings.stripePublishableKey,
+        sessionId: null
       },
       webhooks: {
         submitState: false,
@@ -292,23 +197,8 @@ export default {
           state: null,
           value: null
         }
-      },
-      card: {
-        cvc: null,
-        expiry: null,
-        number: null,
-        name: null
-      },
-      cardErrors: {
-        stripe: false
       }
     }
-  },
-  beforeRouteLeave (to, from, next) {
-    if (this.paymentId) {
-      this.sockets.unsubscribe(this.paymentId)
-    }
-    next()
   },
   async created () {
     await this.getCommunity()
@@ -317,9 +207,6 @@ export default {
     }
   },
   methods: {
-    getCost () {
-      return ((this.currentUpload - this.minUpload) * this.costPerMb).toFixed(2)
-    },
     changeTab (tab) {
       this.tabNumber = tab
     },
@@ -364,66 +251,21 @@ export default {
         this.webhooks.submitState = false
       }
     },
+    async loadBillingSession () {
+      await axios.get(`/community/owner/stripe-session/?community_name=${this.$route.params.communityName}&check_ownership=true`).then(res => {
+        window.location.href = res.data.data.url
+      })
+    },
+    async loadCheckoutSession () {
+      await axios.post(`/community/owner/stripe-session/?community_name=${this.$route.params.communityName}&check_ownership=true`).then(res => {
+        this.stripe.sessionId = res.data.data.session_id
+        this.$refs.checkoutRef.redirectToCheckout()
+      })
+    },
     async updateEmail () {
       await axios.post(`/community/owner/update/?community_name=${this.$route.params.communityName}&check_ownership=true`, {email: this.form.email}).then(res => {
         this.email = this.form.email
       })
-    },
-    async createSub () {
-      this.paymentStatus = 0
-      this.cancelled = false
-
-      await axios.post(`/community/owner/payments/?community_name=${this.$route.params.communityName}&check_ownership=true`, {amount: this.getCost()}).then(res => {
-        this.paymentId = res.data.data.payment_id
-
-        this.sockets.subscribe(this.paymentId, (data) => {
-          if (data.paid) {
-            this.paymentStatus = 1
-          } else {
-            this.paymentStatus = 2
-          }
-        })
-      }).catch(_ => {
-        this.paymentStatus = 2
-      })
-    },
-    async cancelSub () {
-      await axios.delete(`/community/owner/payments/?community_name=${this.$route.params.communityName}&check_ownership=true`)
-      this.cancelled = true
-    },
-    async deleteCard () {
-      await axios.delete(`/community/owner/payments/card/?community_name=${this.$route.params.communityName}&check_ownership=true`)
-      this.cardId = null
-    },
-    async addCard () {
-      var invalid = false
-
-      if (!this.$cardFormat.validateCardNumber(this.card.number)) {
-        this.cardErrors.cardNumber = 'Invalid Credit Card Number.'
-        invalid = true
-      }
-
-      if (!this.$cardFormat.validateCardExpiry(this.card.expiry)) {
-        this.cardErrors.cardExpiry = 'Invalid Expiration Date.'
-        invalid = true
-      }
-
-      if (!this.$cardFormat.validateCardCVC(this.card.cvc)) {
-        this.cardErrors.cardCvc = 'Invalid CVC.'
-        invalid = true
-      }
-
-      if (!invalid) {
-        var expiry = this.card.expiry.split(' / ')
-        var payload = {cvc: this.card.cvc, number: this.card.number.replace(' ', ''), name: this.card.name, exp_month: Number(expiry[0]), exp_year: 20 + Number(expiry[1])}
-
-        await axios.post(`/community/owner/payments/card/?community_name=${this.$route.params.communityName}&check_ownership=true`, payload).catch(_ => {
-          this.cardErrors.stripe = true
-        }).then(res => {
-          this.cardErrors.stripe = false
-          this.cardId = res.data.data.card_id
-        })
-      }
     },
     async updateWebhooks () {
       var payload = {}
@@ -447,11 +289,6 @@ export default {
         this.webhooks.roundEnd.state = null
       })
     },
-    async getPayments () {
-      await axios.get(`/community/owner/payments/?community_name=${this.$route.params.communityName}&check_ownership=true`).then(res => {
-        this.paymentRecords = res.data.data
-      })
-    },
     async toggleApiAccess () {
       if (this.apiAccessDisabled) {
         this.apiAccessDisabled = false
@@ -469,12 +306,9 @@ export default {
         this.webhooks.matchStart.value = community.match_start_webhook
         this.webhooks.roundEnd.value = community.round_end_webhook
         this.apiAccessDisabled = community.allow_api_access
-        this.currentUpload = community.max_upload
         this.masterApiKey = community.master_api_key
-        this.cardId = community.card_id
-        this.paymentStatus = community.payment_status
-        this.cancelled = community.cancelled
         this.email = community.email
+        this.subscriptionExpires = community.subscription_expires
 
         this.communityStats = res.data.data.stats
       }).catch(_ => {
