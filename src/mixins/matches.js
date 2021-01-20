@@ -69,7 +69,7 @@ export default {
         if (!addToCurrent) {
           this.matches.list = res.data.data
         } else {
-          this.matches.list.push(res.data.data)
+          this.matches.list = this.matches.list.concat(res.data.data)
         }
       })
 

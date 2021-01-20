@@ -4,7 +4,7 @@
         <div class="col-md-12">
             <div class="card bg-dark content-div">
                 <div class="card-body text-light">
-                    <h3 class="card-title">SQLMatches 0.2.0</h3>
+                    <h3 class="card-title">SQLMatches 0.2.1</h3>
                     <p>SQLMatches allows you to create communities to easily record demos & to view scoreboards in real-time. Including a per community profile system, caching, live updating, moderation tools & more!</p>
 
                     <h4 style="margin-top:25px;">Increasing max upload</h4>
