@@ -7,7 +7,7 @@ export default {
         list: [],
         search: null,
         hideLoadMore: false,
-        newPerPage: 10,
+        newPerPage: 8,
         wsEnabled: true,
         loading: true
       }

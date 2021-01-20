@@ -71,6 +71,8 @@ export default {
       this.matches.loading = true
       this.communities.loading = true
 
+      this.matches.newPerPage = 3
+
       await axios.get('/communities/all/').then(res => {
         this.communities.list = res.data.data.communities
         this.matches.list = res.data.data.matches
@@ -79,7 +81,7 @@ export default {
           this.matches.hideLoadMore = true
         }
 
-        if (this.communities.list.length < 10 || this.communities.list.length === 0) {
+        if (this.communities.list.length < 8 || this.communities.list.length === 0) {
           this.communities.hideLoadMore = true
         }
       })
