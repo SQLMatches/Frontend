@@ -11,6 +11,7 @@ import Community from '@/pages/Community'
 import Owner from '@/pages/Owner'
 import Admin from '@/pages/Admin'
 import TOS from '@/pages/Tos'
+import Payment from '@/pages/Payment'
 
 Vue.use(Router)
 
@@ -36,6 +37,11 @@ export default new Router({
       path: '/c/:communityName/owner',
       name: 'Owner',
       component: Owner
+    },
+    {
+      path: '/c/:communityName/owner/:paymentStatus',
+      name: 'Payment',
+      component: Payment
     },
     {
       path: '/c/:communityName/scoreboard/:matchID',
