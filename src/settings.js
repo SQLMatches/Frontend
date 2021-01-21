@@ -4,5 +4,6 @@ export default {
   baseUrl: 'localhost',
   apiUrl: '/api',
   wsUrl: '/ws/socket.io',
+  documentationReadMe: 'https://raw.githubusercontent.com/SQLMatches/Documentation/main/public.md',
   stripePublishableKey: '...'
 }

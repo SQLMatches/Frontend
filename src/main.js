@@ -2,6 +2,8 @@ import Vue from 'vue'
 import Axios from 'axios'
 import VueSocketIO from 'vue-socket.io'
 
+import VueShowdownPlugin from 'vue-showdown'
+
 import { BootstrapVue, BootstrapVueIcons } from 'bootstrap-vue'
 
 import 'bootstrap-vue/dist/bootstrap-vue.css'
@@ -15,6 +17,7 @@ import settings from './settings.js'
 
 Vue.use(BootstrapVue)
 Vue.use(BootstrapVueIcons)
+Vue.use(VueShowdownPlugin, {flavor: 'github'})
 Vue.use(
   new VueSocketIO({
     connection: settings.ws + settings.baseUrl,
