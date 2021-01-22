@@ -37,11 +37,55 @@
       </div>
     </div>
 
+    <!-- Start: Footer Dark -->
+    <div class="footer-dark bg-dark content-div">
+        <footer>
+            <div class="container">
+                <div class="row">
+                    <!-- Start: Services -->
+                    <div class="col-sm-6 col-md-3 item">
+                        <h3>Index</h3>
+                        <ul>
+                            <li><router-link :to="{name: 'Home'}">Home</router-link></li>
+                            <li v-if="communityName === null"><router-link :to="{name: 'Home'}">Create a community</router-link></li>
+                            <div v-else>
+                              <li><router-link :to="{name: 'CommunityPage', params: {'communityName': communityName}}">{{ communityName }}</router-link></li>
+                              <li><router-link :to="{name: 'Owner', params: {'communityName': communityName}}">Owner Panel</router-link></li>
+                            </div>
+                        </ul>
+                    </div>
+                    <!-- End: Services -->
+                    <!-- Start: About -->
+                    <div class="col-sm-6 col-md-3 item">
+                        <h3>Externals</h3>
+                        <ul>
+                            <li><a :href="socials.discord" target="_blank">Discord</a></li>
+                            <li><a :href="socials.twitter" target="_blank">Twitter</a></li>
+                            <li><a :href="socials.github" target="_blank">GitHub</a></li>
+                        </ul>
+                    </div>
+                    <!-- End: About -->
+                    <!-- Start: Footer Text -->
+                    <div class="col-md-6 item text">
+                        <h3>About</h3>
+                        <p>SQLMatches allows you to create communities to easily record demos & to view scoreboards in real-time. Including a per community profile system, caching, live updating, moderation tools & more!</p>
+                    </div>
+                    <!-- End: Footer Text -->
+                </div>
+                <!-- Start: Copyright -->
+                <p class="copyright">SQLMatches is proudly licensed under GPL-3.0</p>
+                <!-- End: Copyright -->
+            </div>
+        </footer>
+    </div>
+    <!-- End: Footer Dark -->
   </div>
 </template>
 
 <script>
 import axios from 'axios'
+
+import settings from './settings.js'
 
 export default {
   name: 'App',
@@ -51,7 +95,8 @@ export default {
       banned: false,
       communityName: null,
       communityPageName: null,
-      loading: true
+      loading: true,
+      socials: settings.socials
     }
   },
   async created () {

@@ -4,11 +4,30 @@
         <div class="col-md-12">
             <div class="card bg-dark content-div">
                 <div class="card-body text-light">
-                    <h3 class="card-title">SQLMatches 0.2.1</h3>
-                    <p>SQLMatches allows you to create communities to easily record demos & to view scoreboards in real-time. Including a per community profile system, caching, live updating, moderation tools & more!</p>
+                    <h4>Subscribe to SQLMatches for only $2.50 a month!</h4>
+                    <p>Subscriptions can be made under the 'Owner Panel' inside the 'Subscriptions / Billing' tab</p>
 
-                    <h4 style="margin-top:25px;">Increasing max upload</h4>
-                    <p>Are you wanting to upload 64 / 128 tick demos or maybe just longer demos? Check out the 'Subscriptions / Billing' tab on the Owner Panel.</p>
+                    <h5 style="margin-top:5px;">Current features</h5>
+                    <ul>
+                      <li>100 MB Max upload</li>
+                    </ul>
+
+                    <h5 style="margin-top:5px;">Planned features</h5>
+                    <ul>
+                      <li>Discord bot</li>
+                      <li>Custom team logos</li>
+                      <li>Owning multiple communities</li>
+                      <li>Custom domain</li>
+                      <li>Match management</li>
+                      <li>Administration tools</li>
+                    </ul>
+
+                    <h4 style="margin-top:25px">Make a donation</h4>
+                    <form action="https://www.paypal.com/donate" method="post" target="_top">
+                      <input type="hidden" name="hosted_button_id" value="ZGS5RJ9FC94GQ" />
+                      <input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif" border="0" name="submit" title="PayPal - The safer, easier way to pay online!" alt="Donate with PayPal button" />
+                      <img alt="" border="0" src="https://www.paypal.com/en_NZ/i/scr/pixel.gif" width="1" height="1" />
+                    </form>
                 </div>
             </div>
         </div>
