@@ -5,6 +5,10 @@
             <b-alert v-if="banned" style="margin-top:25px;" variant="warning" show>This community has been banned from SQLMatches.com</b-alert>
             <b-alert v-else-if="disabled" style="margin-top:25px;" variant="warning" show>This community has been disabled by the owner.</b-alert>
 
+            <div v-if="servers.list.length > 0">
+              <servers style="margin-top:25px;" :list="servers.list"></servers>
+            </div>
+
             <div class="card bg-dark content-div">
                 <div class="card-body">
 
@@ -48,20 +52,24 @@ import axios from 'axios'
 import Games from '../components/Games.vue'
 import SearchBar from '../components/SearchBar.vue'
 import LoadMore from '../components/LoadMore.vue'
+import Servers from '../components/Servers.vue'
 
 import settings from '../settings.js'
 
 import matches from '../mixins/matches.js'
+import servers from '../mixins/servers.js'
 
 export default {
   name: 'Community',
   mixins: [
-    matches
+    matches,
+    servers
   ],
   components: {
     Games,
     SearchBar,
-    LoadMore
+    LoadMore,
+    Servers
   },
   data () {
     return {
@@ -93,6 +101,7 @@ export default {
         this.apiAccessEnabled = res.data.data.allow_api_access
 
         await this.getMatches()
+        await this.getServers()
       }).catch(_ => {
         this.$router.push({name: 'PageNotFound'})
       })

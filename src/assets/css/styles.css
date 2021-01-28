@@ -528,3 +528,12 @@ hr {
 pre {
   background-color: #242329;
 }
+
+.card-img-top {
+  height: 30px;
+  background-position: center center;
+  background-size: cover;
+  background-repeat: space;
+  -o-object-fit: cover;
+  object-fit: cover;
+}

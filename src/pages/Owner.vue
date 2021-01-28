@@ -36,6 +36,7 @@
         <div class="card-header">
             <b-tabs fill>
                 <b-tab title="API" active v-on:click="changeTab(0)"></b-tab>
+                <b-tab title="Servers" v-on:click="changeTab(4); getServers()"></b-tab>
                 <b-tab title="Matches" v-on:click="changeTab(1); getMatches()"></b-tab>
                 <b-tab title="Community" v-on:click="changeTab(2)"></b-tab>
                 <b-tab title="Webhooks" v-on:click="changeTab(3)"></b-tab>
@@ -106,7 +107,7 @@
               <b-button variant="danger" v-on:click="$bvToast.show('community-disable')">Disable community</b-button>
             </div>
           </div>
-          <div v-else class="create-community">
+          <div v-else-if="tabNumber === 3" class="create-community">
               <p style="margin-bottom: 25px;">Get data pushed to endpoints on match events.</p>
               <p>Each payload pushes with BasicAuth authentication what has your master API key as the password, please validate this before using the payload.</p>
               <p style="margin-bottom: 25px;">Be careful who you push webhooks to, because they'll be able to retrieve your master api key.</p>
@@ -128,6 +129,33 @@
                 <b-button variant="primary" v-on:click="updateWebhooks()" disabled>Update Webhooks</b-button>
               </div>
           </div>
+          <div v-else>
+            <b-alert variant="warning" v-if="servers.serverAlreadyAdded" show>Server already added!</b-alert>
+
+            <b-form class="d-flex justify-content-center mb-3" inline>
+              <b-form-input
+                id="inline-form-input-name"
+                class="mb-2 mr-sm-2 mb-sm-0"
+                placeholder="Name"
+                v-model="servers.form.name"
+              ></b-form-input>
+
+              <b-form-input
+                id="inline-form-input-name"
+                class="mb-2 mr-sm-2 mb-sm-0"
+                placeholder="IP"
+                v-model="servers.form.ip"
+              ></b-form-input>
+
+              <b-input-group prepend=":" class="mb-2 mr-sm-2 mb-sm-0">
+                <b-form-input id="inline-form-input-username" v-model="servers.form.port" placeholder="27015"></b-form-input>
+              </b-input-group>
+
+              <b-button v-on:click="addServer()" variant="primary">Add Server</b-button>
+            </b-form>
+
+            <servers style="margin-top:25px;" :list="servers.list" :ownerPanel="true"></servers>
+          </div>
         </div>
     </div>
   </div>
@@ -140,9 +168,11 @@ import { StripeCheckout } from '@vue-stripe/vue-stripe'
 
 import SearchBar from '../components/SearchBar.vue'
 import LoadMore from '../components/LoadMore.vue'
+import Servers from '../components/Servers.vue'
 
 import matches from '../mixins/matches.js'
 import email from '../mixins/email.js'
+import servers from '../mixins/servers.js'
 
 import settings from '../settings.js'
 
@@ -152,12 +182,14 @@ export default {
   name: 'Owner',
   mixins: [
     matches,
-    email
+    email,
+    servers
   ],
   components: {
     StripeCheckout,
     SearchBar,
-    LoadMore
+    LoadMore,
+    Servers
   },
   data () {
     return {
