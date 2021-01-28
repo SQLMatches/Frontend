@@ -154,7 +154,7 @@
               <b-button v-on:click="addServer()" variant="primary">Add Server</b-button>
             </b-form>
 
-            <servers style="margin-top:25px;" :list="servers.list" :ownerPanel="true"></servers>
+            <servers style="margin-top:25px;" v-on:click="deleteServer" :servers="servers" :ownerPanel="true"></servers>
           </div>
         </div>
     </div>
@@ -172,7 +172,7 @@ import Servers from '../components/Servers.vue'
 
 import matches from '../mixins/matches.js'
 import email from '../mixins/email.js'
-import servers from '../mixins/servers.js'
+import serversMixin from '../mixins/serversMixin.js'
 
 import settings from '../settings.js'
 
@@ -183,7 +183,7 @@ export default {
   mixins: [
     matches,
     email,
-    servers
+    serversMixin
   ],
   components: {
     StripeCheckout,

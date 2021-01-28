@@ -6,7 +6,7 @@
             <b-alert v-else-if="disabled" style="margin-top:25px;" variant="warning" show>This community has been disabled by the owner.</b-alert>
 
             <div v-if="servers.list.length > 0">
-              <servers style="margin-top:25px;" :list="servers.list"></servers>
+              <servers style="margin-top:25px;" :servers="servers"></servers>
             </div>
 
             <div class="card bg-dark content-div">
@@ -57,13 +57,13 @@ import Servers from '../components/Servers.vue'
 import settings from '../settings.js'
 
 import matches from '../mixins/matches.js'
-import servers from '../mixins/servers.js'
+import serversMixin from '../mixins/serversMixin.js'
 
 export default {
   name: 'Community',
   mixins: [
     matches,
-    servers
+    serversMixin
   ],
   components: {
     Games,
