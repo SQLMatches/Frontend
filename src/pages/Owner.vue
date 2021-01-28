@@ -133,17 +133,18 @@
             <b-alert variant="warning" v-if="servers.serverAlreadyAdded" show>Server already added!</b-alert>
 
             <b-form class="d-flex justify-content-center mb-3" inline>
-              <b-form-input class="mb-2 mr-sm-2 mb-sm-0" placeholder="Name" v-model="servers.form.name"></b-form-input>
+              <b-form-input :state="serverAddValid.name" v-on:input="validateName()" class="mb-2 mr-sm-2 mb-sm-0" placeholder="Name" v-model="servers.form.name"></b-form-input>
 
               <b-input-group prepend="-" class="mb-2 mr-sm-2 mb-sm-0">
-                <b-form-input placeholder="IP" v-model="servers.form.ip"></b-form-input>
+                <b-form-input :state="serverAddValid.ip" v-on:input="validateIpV4()" placeholder="IP" v-model="servers.form.ip"></b-form-input>
               </b-input-group>
 
               <b-input-group prepend=":" class="mb-2 mr-sm-2 mb-sm-0">
-                <b-form-input v-model="servers.form.port" placeholder="27015"></b-form-input>
+                <b-form-input :state="serverAddValid.port" v-on:input="validatePort()" v-model="servers.form.port" placeholder="27015"></b-form-input>
               </b-input-group>
 
-              <b-button v-on:click="addServer()" variant="primary">Add Server</b-button>
+              <b-button v-if="serverAddValid.name && serverAddValid.ip && (serverAddValid.port || serverAddValid.port == null)" v-on:click="addServer()" variant="primary">Add Server</b-button>
+              <b-button v-else disabled variant="primary">Add Server</b-button>
             </b-form>
 
             <servers style="margin-top:25px;" v-on:click="deleteServer" :servers="servers" :ownerPanel="true"></servers>
@@ -156,7 +157,7 @@
 <script>
 import axios from 'axios'
 
-import StripeCheckout from '@vue-stripe/vue-stripe'
+import { StripeCheckout } from '@vue-stripe/vue-stripe'
 
 import SearchBar from '../components/SearchBar.vue'
 import LoadMore from '../components/LoadMore.vue'
@@ -169,6 +170,7 @@ import serversMixin from '../mixins/serversMixin.js'
 import settings from '../settings.js'
 
 const webhookReg = /(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})/
+const ipv4Reg = /^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/
 
 export default {
   name: 'Owner',
@@ -196,6 +198,12 @@ export default {
       paymentRecords: null,
       subscriptionExpires: null,
       validateWebhookRegExp: new RegExp(webhookReg),
+      validateIpV4RegExp: new RegExp(ipv4Reg),
+      serverAddValid: {
+        name: null,
+        ip: null,
+        port: null
+      },
       form: {
         email: null
       },
@@ -233,6 +241,16 @@ export default {
   methods: {
     changeTab (tab) {
       this.tabNumber = tab
+    },
+    validatePort () {
+      var int = parseFloat(this.servers.form.port)
+      this.serverAddValid.port = !isNaN(this.servers.form.port) && (int | 0) === int
+    },
+    validateName () {
+      this.serverAddValid.name = this.servers.form.name.length <= 64 && this.servers.form.name.length >= 3
+    },
+    validateIpV4 () {
+      this.serverAddValid.ip = this.validateIpV4RegExp.test(this.servers.form.ip)
     },
     addMatchToDelete (matchID) {
       if (this.matchesToDelete.includes(matchID)) {
