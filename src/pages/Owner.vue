@@ -133,22 +133,14 @@
             <b-alert variant="warning" v-if="servers.serverAlreadyAdded" show>Server already added!</b-alert>
 
             <b-form class="d-flex justify-content-center mb-3" inline>
-              <b-form-input
-                id="inline-form-input-name"
-                class="mb-2 mr-sm-2 mb-sm-0"
-                placeholder="Name"
-                v-model="servers.form.name"
-              ></b-form-input>
+              <b-form-input class="mb-2 mr-sm-2 mb-sm-0" placeholder="Name" v-model="servers.form.name"></b-form-input>
 
-              <b-form-input
-                id="inline-form-input-name"
-                class="mb-2 mr-sm-2 mb-sm-0"
-                placeholder="IP"
-                v-model="servers.form.ip"
-              ></b-form-input>
+              <b-input-group prepend="-" class="mb-2 mr-sm-2 mb-sm-0">
+                <b-form-input placeholder="IP" v-model="servers.form.ip"></b-form-input>
+              </b-input-group>
 
               <b-input-group prepend=":" class="mb-2 mr-sm-2 mb-sm-0">
-                <b-form-input id="inline-form-input-username" v-model="servers.form.port" placeholder="27015"></b-form-input>
+                <b-form-input v-model="servers.form.port" placeholder="27015"></b-form-input>
               </b-input-group>
 
               <b-button v-on:click="addServer()" variant="primary">Add Server</b-button>
@@ -164,7 +156,7 @@
 <script>
 import axios from 'axios'
 
-import { StripeCheckout } from '@vue-stripe/vue-stripe'
+import StripeCheckout from '@vue-stripe/vue-stripe'
 
 import SearchBar from '../components/SearchBar.vue'
 import LoadMore from '../components/LoadMore.vue'
