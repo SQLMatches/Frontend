@@ -39,7 +39,7 @@
                     <h3 class="text-light card-title">Recent Matches</h3>
                     <search-bar v-on:input="getMatches()" v-model="matches.search" :debounce="500"></search-bar>
                     <games :matches="matches"></games>
-                    <load-more v-if="!matches.hideLoadMore & !matches.loading" v-on:click="loadMoreMatches"></load-more>
+                    <load-more v-if="!matches.hideLoadMore && !matches.loading" v-on:click="loadMoreMatches()"></load-more>
                 </div>
             </div>
         </div>
@@ -51,7 +51,7 @@
                   <h3 class="text-light card-title">Communities</h3>
                   <search-bar v-on:input="getCommunities()" v-model="communities.search" :debounce="500"></search-bar>
                   <communities :communities="communities"></communities>
-                  <load-more v-if="!communities.hideLoadMore & !communities.loading" v-on:click="loadMoreCommunities"></load-more>
+                  <load-more v-if="!communities.hideLoadMore && !communities.loading" v-on:click="loadMoreCommunities()"></load-more>
               </div>
           </div>
       </div>
@@ -83,6 +83,9 @@ export default {
     LoadMore
   },
   async created () {
+    this.matches.newPerPage = 3
+    this.communities.newPerPage = 8
+
     await this.getHomeContents()
   },
   methods: {
@@ -90,19 +93,9 @@ export default {
       this.matches.loading = true
       this.communities.loading = true
 
-      this.matches.newPerPage = 3
-
       await axios.get('/communities/all/').then(res => {
         this.communities.list = res.data.data.communities
         this.matches.list = res.data.data.matches
-
-        if (this.matches.list.length < 3 || this.matches.list.length === 0) {
-          this.matches.hideLoadMore = true
-        }
-
-        if (this.communities.list.length < 8 || this.communities.list.length === 0) {
-          this.communities.hideLoadMore = true
-        }
       })
 
       this.matches.loading = false

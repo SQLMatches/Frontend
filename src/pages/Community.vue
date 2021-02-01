@@ -38,7 +38,7 @@
 
                     <search-bar v-on:input="getMatches()" v-model="matches.search" :debounce="500"></search-bar>
                     <games :matches="matches"></games>
-                    <load-more v-if="!matches.hideLoadMore & !matches.loading" v-on:click="loadMoreMatches"></load-more>
+                    <load-more v-if="!matches.hideLoadMore && !matches.loading" v-on:click="loadMoreMatches()"></load-more>
                 </div>
             </div>
         </div>
@@ -100,8 +100,8 @@ export default {
         this.disabled = res.data.data.disabled
         this.apiAccessEnabled = res.data.data.allow_api_access
 
-        await this.getMatches()
         await this.getServers()
+        await this.getMatches()
       }).catch(_ => {
         this.$router.push({name: 'PageNotFound'})
       })

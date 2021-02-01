@@ -9,7 +9,8 @@ export default {
         hideLoadMore: false,
         newPerPage: 8,
         wsEnabled: true,
-        loading: true
+        loading: true,
+        page: 1
       }
     }
   },
@@ -56,11 +57,11 @@ export default {
 
       this.communities.loading = false
     },
-    async loadMoreCommunities (pageNumber) {
+    async loadMoreCommunities () {
       var oldCommunitiesLen = this.communities.list.length
-      await this.getCommunities(pageNumber, true)
-      if (oldCommunitiesLen === this.communities.list.length ||
-          this.communities.list.length - oldCommunitiesLen < this.communities.newPerPage) {
+      await this.getCommunities(this.communities.page += 1, true)
+      if (oldCommunitiesLen === this.communities.list.length || this.communities.newPerPage > this.communities.list.length - oldCommunitiesLen) {
+        console.log('hide load more equals false')
         this.communities.hideLoadMore = true
       }
     }

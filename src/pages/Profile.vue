@@ -86,7 +86,7 @@
             </b-tab>
             <b-tab title="Matches" v-on:click="getMatches()">
               <games :matches="matches"></games>
-              <load-more v-if="!matches.hideLoadMore & !loading" v-on:click="loadMoreMatches"></load-more>
+              <load-more v-if="!matches.hideLoadMore && !loading" v-on:click="loadMoreMatches()"></load-more>
             </b-tab>
           </b-tabs>
         </div>

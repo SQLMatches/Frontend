@@ -9,7 +9,8 @@ export default {
         hideLoadMore: false,
         newPerPage: 10,
         wsEnabled: true,
-        loading: true
+        loading: true,
+        page: 1
       }
     }
   },
@@ -81,11 +82,10 @@ export default {
 
       this.matches.loading = false
     },
-    async loadMoreMatches (pageNumber) {
+    async loadMoreMatches () {
       var oldMatchLen = this.matches.list.length
-      await this.getMatches(pageNumber, true)
-      if (oldMatchLen === this.matches.list.length ||
-          this.matches.list.length - oldMatchLen < this.matches.newPerPage) {
+      await this.getMatches(this.matches.page += 1, true)
+      if (oldMatchLen === this.matches.list.length || this.matches.newPerPage > this.matches.list.length - oldMatchLen) {
         this.matches.hideLoadMore = true
       }
     }
