@@ -6,7 +6,7 @@
             <b-alert v-else-if="disabled" style="margin-top:25px;" variant="warning" show>This community has been disabled by the owner.</b-alert>
 
             <div v-if="servers.list.length > 0">
-              <servers style="margin-top:25px;" :servers="servers"></servers>
+              <servers class="server-area" style="margin-top:25px;" :servers="servers"></servers>
             </div>
 
             <div class="card bg-dark content-div">
