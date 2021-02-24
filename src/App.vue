@@ -49,7 +49,7 @@
                         <h3>Index</h3>
                         <ul>
                             <li><router-link :to="{name: 'Home'}">Home</router-link></li>
-                            <li v-if="communityName === null"><router-link :to="{name: 'Home'}">Create a community</router-link></li>
+                            <li v-if="communityName === null"><router-link :to="{name: 'CreateCommunity'}">Create a community</router-link></li>
                             <div v-else>
                               <li><router-link :to="{name: 'CommunityPage', params: {'communityName': communityName}}">{{ communityName }}</router-link></li>
                               <li><router-link :to="{name: 'Owner', params: {'communityName': communityName}}">Owner Panel</router-link></li>
