@@ -93,11 +93,11 @@ export default {
     }
   },
   async created () {
-    await this.getCommunities()
+    var res = await this.getCommunities()
 
-    await axios.get('/admin/?check_root=true').catch(_ => {
+    if (res.status !== 200) {
       this.$router.push({name: 'PageNotFound'})
-    })
+    }
   },
   methods: {
     changeTab (tab) {

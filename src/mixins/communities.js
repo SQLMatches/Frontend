@@ -53,9 +53,11 @@ export default {
         } else {
           this.communities.list = this.communities.list.concat(res.data.data)
         }
-      })
 
-      this.communities.loading = false
+        this.communities.loading = false
+
+        return res
+      })
     },
     async loadMoreCommunities () {
       var oldCommunitiesLen = this.communities.list.length
