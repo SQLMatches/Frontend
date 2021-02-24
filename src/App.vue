@@ -15,6 +15,8 @@
           <b-nav-item v-if="communityName === null && $route.name !== 'CreateCommunity'" :to="{name: 'CreateCommunity'}"><div class="btn btn-info btn-lg" role="button">Create Community&nbsp; <b-icon icon="plus-circle-fill" variant="light"></b-icon></div></b-nav-item>
           <b-nav-item v-else-if="communityPageName !== communityName" :to="{name: 'CommunityPage', params: {'communityName': communityName}}"><div class="btn btn-info btn-lg" role="button">Go to {{ communityName }}</div></b-nav-item>
 
+          <b-nav-item v-if="$route.name === 'CommunityPage'" :to="{name: 'Profile', params: {'communityName': communityName, 'steamID': steamID}}"><div class="btn btn-info btn-lg" role="button">My Profile</div></b-nav-item>
+
           <b-nav-item v-if="communityName != null && !banned" :to="{name: 'Owner', params: {'communityName': communityName}}"><div class="btn btn-info btn-lg" role="button">Owner Panel</div></b-nav-item>
 
           <b-nav-item v-if="!loggedIn" :to="{name: 'Login'}"><div class="btn btn-primary btn-lg" role="button">&nbsp;Login&nbsp; <b-icon icon="chevron-double-right" variant="light"></b-icon></div></b-nav-item>
@@ -96,7 +98,8 @@ export default {
       communityName: null,
       communityPageName: null,
       loading: true,
-      socials: settings.socials
+      socials: settings.socials,
+      steamID: null
     }
   },
   async created () {
@@ -106,8 +109,9 @@ export default {
       this.loggedIn = true
       this.communityName = res.data.data.community_name
       this.banned = res.data.data.banned
+      this.steamID = res.data.data.steam_id
 
-      localStorage.setItem('steamID', res.data.data.steam_id)
+      localStorage.setItem('steamID', this.steamID)
     }).catch(_ => {
       this.loggedIn = false
     })
