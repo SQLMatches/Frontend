@@ -36,9 +36,20 @@
                       </b-collapse>
                     </div>
 
-                    <search-bar v-on:input="getMatches()" v-model="matches.search" :debounce="500"></search-bar>
-                    <games :matches="matches"></games>
-                    <load-more v-if="!matches.hideLoadMore && !matches.loading" v-on:click="loadMoreMatches()"></load-more>
+                    <div>
+                      <b-tabs content-class="mt-3" justified>
+                        <b-tab title="Matches" active>
+                          <search-bar v-on:input="getMatches()" v-model="matches.search" :debounce="500"></search-bar>
+                          <games :matches="matches"></games>
+                          <load-more v-if="!matches.hideLoadMore && !matches.loading" v-on:click="loadMoreMatches()"></load-more>
+                        </b-tab>
+                        <b-tab title="Players" v-on:click="getPlayers()">
+                          <search-bar v-on:input="getPlayers()" v-model="players.search" :debounce="500"></search-bar>
+                          <players :players="players"></players>
+                          <load-more v-if="!players.hideLoadMore && !players.loading" v-on:click="loadMorePlayers()"></load-more>
+                        </b-tab>
+                      </b-tabs>
+                    </div>
                 </div>
             </div>
         </div>
@@ -53,23 +64,27 @@ import Games from '../components/Games.vue'
 import SearchBar from '../components/SearchBar.vue'
 import LoadMore from '../components/LoadMore.vue'
 import Servers from '../components/Servers.vue'
+import Players from '../components/Players.vue'
 
 import settings from '../settings.js'
 
 import matches from '../mixins/matches.js'
 import serversMixin from '../mixins/serversMixin.js'
+import players from '../mixins/players.js'
 
 export default {
   name: 'Community',
   mixins: [
     matches,
-    serversMixin
+    serversMixin,
+    players
   ],
   components: {
     Games,
     SearchBar,
     LoadMore,
-    Servers
+    Servers,
+    Players
   },
   data () {
     return {
