@@ -7,7 +7,7 @@ export default {
         list: [],
         search: null,
         hideLoadMore: false,
-        newPerPage: 10,
+        newPerPage: 8,
         loading: true,
         page: 1
       }
@@ -44,9 +44,9 @@ export default {
 
       this.players.loading = false
     },
-    async loadMoreMatches () {
+    async loadMorePlayers () {
       var oldPlayerLen = this.players.list.length
-      await this.getMatches(this.players.page += 1, true)
+      await this.getPlayers(this.players.page += 1, true)
       if (oldPlayerLen === this.players.list.length || this.players.newPerPage > this.players.list.length - oldPlayerLen) {
         this.players.hideLoadMore = true
       }
